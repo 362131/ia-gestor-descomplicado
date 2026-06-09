@@ -28,13 +28,13 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Treinamento prático de Inteligência Artificial para gestores com Eduardo Mendes e Eduardo Carvalho. 12 encontros, ROI real, automação e produtividade.",
+          "Treinamento prático de Inteligência Artificial para gestores com Professor Dr. Eduardo Mendes e Eduardo Carvalho. 12 encontros, ROI real, automação e produtividade.",
       },
       { property: "og:title", content: "IA para Gestores na Prática" },
       {
         property: "og:description",
         content:
-          "Ganhe tempo e reduza custos aplicando IA na gestão. Treinamento com Eduardo Mendes e Eduardo Carvalho.",
+          "Ganhe tempo e reduza custos aplicando IA na gestão. Treinamento com Professor Dr. Eduardo Mendes e Eduardo Carvalho.",
       },
       { property: "og:image", content: eduardoMendes.url },
     ],
@@ -43,17 +43,17 @@ export const Route = createFileRoute("/")({
 });
 
 const topics = [
-  { n: 1, t: "Introdução à IA e suas aplicações práticas", d: "Conceitos de IA e aplicações no dia a dia da gestão.", who: "Eduardo Mendes" },
-  { n: 2, t: "Automação de processos com IA", d: "Como automatizar tarefas repetitivas e ganhar horas por semana.", who: "Eduardo Mendes" },
-  { n: 3, t: "Análise de dados com IA", d: "Interprete grandes volumes de dados em minutos.", who: "Eduardo Mendes" },
+  { n: 1, t: "Introdução à IA e suas aplicações práticas", d: "Conceitos de IA e aplicações no dia a dia da gestão.", who: "Professor Dr. Eduardo Mendes" },
+  { n: 2, t: "Automação de processos com IA", d: "Como automatizar tarefas repetitivas e ganhar horas por semana.", who: "Professor Dr. Eduardo Mendes" },
+  { n: 3, t: "Análise de dados com IA", d: "Interprete grandes volumes de dados em minutos.", who: "Professor Dr. Eduardo Mendes" },
   { n: 4, t: "IA na gestão de pessoas e recrutamento", d: "Acelere triagem, entrevistas e onboarding com IA.", who: "Eduardo Carvalho" },
-  { n: 5, t: "Geração de conteúdo automatizado", d: "Crie comunicações, relatórios e propostas com IA.", who: "Eduardo Mendes" },
-  { n: 6, t: "Otimização de fluxos de trabalho", d: "Identifique e elimine gargalos com IA aplicada.", who: "Eduardo Mendes" },
+  { n: 5, t: "Geração de conteúdo automatizado", d: "Crie comunicações, relatórios e propostas com IA.", who: "Professor Dr. Eduardo Mendes" },
+  { n: 6, t: "Otimização de fluxos de trabalho", d: "Identifique e elimine gargalos com IA aplicada.", who: "Professor Dr. Eduardo Mendes" },
   { n: 7, t: "IA para atendimento ao cliente", d: "Suporte 24/7, redução de custos e aumento de NPS.", who: "Eduardo Carvalho" },
   { n: 8, t: "IA para desenvolvimento de lideranças", d: "Ferramentas para acelerar líderes da sua organização.", who: "Eduardo Carvalho" },
-  { n: 9, t: "Processamento de documentos com IA", d: "Extraia informação de contratos, notas e PDFs.", who: "Eduardo Mendes" },
-  { n: 10, t: "Integração de ferramentas de IA", d: "Conecte as melhores ferramentas no seu stack.", who: "Eduardo Mendes" },
-  { n: 11, t: "Casos de sucesso e ROI", d: "Estudos reais de retorno sobre investimento em IA.", who: "Eduardo Mendes" },
+  { n: 9, t: "Processamento de documentos com IA", d: "Extraia informação de contratos, notas e PDFs.", who: "Professor Dr. Eduardo Mendes" },
+  { n: 10, t: "Integração de ferramentas de IA", d: "Conecte as melhores ferramentas no seu stack.", who: "Professor Dr. Eduardo Mendes" },
+  { n: 11, t: "Casos de sucesso e ROI", d: "Estudos reais de retorno sobre investimento em IA.", who: "Professor Dr. Eduardo Mendes" },
   { n: 12, t: "IA para cultura e engajamento", d: "Promova engajamento e cultura organizacional com IA.", who: "Eduardo Carvalho" },
 ];
 
@@ -127,7 +127,7 @@ function LandingPage() {
             <div className="relative grid grid-cols-2 gap-4">
               <SpeakerCard
                 img={eduardoMendes.url}
-                name="Eduardo Mendes"
+                name="Professor Dr. Eduardo Mendes"
                 share="80%"
                 tall
               />
@@ -183,7 +183,7 @@ function LandingPage() {
         <div className="mt-10 grid gap-6 md:grid-cols-2">
           <SpeakerBio
             img={eduardoMendes.url}
-            name="Eduardo Mendes"
+            name="Professor Dr. Eduardo Mendes"
             role="Especialista em IA aplicada"
             bio="Consultor e instrutor de Inteligência Artificial para negócios, com vasta experiência em automação de processos, análise de dados e implementação de IA em empresas de diversos setores. Conduz a maior parte do treinamento, trazendo ferramentas, demonstrações ao vivo e cases reais."
             highlights={[
@@ -215,7 +215,7 @@ function LandingPage() {
             <p className="mt-2 text-muted-foreground">3 meses · 4 encontros por mês · 100% prático</p>
           </div>
           <div className="flex items-center gap-3 text-xs text-muted-foreground">
-            <LegendDot label="Eduardo Mendes" color="var(--color-primary)" />
+            <LegendDot label="Professor Dr. Eduardo Mendes" color="var(--color-primary)" />
             <LegendDot label="Eduardo Carvalho" color="var(--color-accent)" />
           </div>
         </div>
@@ -230,7 +230,7 @@ function LandingPage() {
                 className="absolute inset-x-0 top-0 h-1"
                 style={{
                   background:
-                    tp.who === "Eduardo Mendes"
+                    tp.who === "Professor Dr. Eduardo Mendes"
                       ? "var(--gradient-gold)"
                       : "var(--color-accent)",
                 }}
@@ -301,7 +301,7 @@ function LandingPage() {
 
       <footer className="border-t border-border">
         <div className="mx-auto max-w-7xl px-6 py-8 text-center text-sm text-muted-foreground">
-          © 2026 IA para Gestores na Prática · Eduardo Mendes & Eduardo Carvalho
+          © 2026 IA para Gestores na Prática · Professor Dr. Eduardo Mendes & Eduardo Carvalho
         </div>
       </footer>
     </div>
