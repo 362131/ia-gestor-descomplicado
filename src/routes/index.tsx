@@ -191,7 +191,7 @@ function LandingPage() {
             ]}
           />
           <SpeakerBio
-            imgClassName="object-contain bg-secondary"
+            imgClassName="object-cover object-top"
             img={eduardoCarvalho.url}
             name="Eduardo Carvalho"
             role="Especialista em Gestão de Pessoas"
