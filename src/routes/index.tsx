@@ -136,7 +136,9 @@ function LandingPage() {
                   img={eduardoCarvalho.url}
                   name="Eduardo Carvalho"
                   share="20%"
+                  imgClassName="object-contain object-top"
                 />
+
                 <Card className="bg-card/80 border-border p-4 backdrop-blur">
                   <div className="flex items-center gap-2 text-sm font-semibold">
                     <TrendingDown className="h-4 w-4 text-primary" />
