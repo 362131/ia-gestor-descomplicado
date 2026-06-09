@@ -182,7 +182,7 @@ function LandingPage() {
           <SpeakerBio
             img={eduardoMendes.url}
             name="Eduardo Mendes"
-            role="Especialista em IA aplicada · 80% do programa"
+            role="Especialista em IA aplicada"
             bio="Consultor e instrutor de Inteligência Artificial para negócios, com vasta experiência em automação de processos, análise de dados e implementação de IA em empresas de diversos setores. Conduz a maior parte do treinamento, trazendo ferramentas, demonstrações ao vivo e cases reais."
             highlights={[
               "Automação de processos e fluxos de trabalho",
@@ -193,7 +193,7 @@ function LandingPage() {
           <SpeakerBio
             img={eduardoCarvalho.url}
             name="Eduardo Carvalho"
-            role="Especialista em Gestão de Pessoas · 20% do programa"
+            role="Especialista em Gestão de Pessoas"
             bio="Líder com longa trajetória em gestão de pessoas, desenvolvimento de lideranças e cultura organizacional. Traz para o programa a visão de como aplicar IA em RH, atendimento e engajamento — conectando tecnologia com o lado humano da gestão."
             highlights={[
               "IA na gestão de pessoas e recrutamento",
@@ -314,7 +314,7 @@ function Stat({ icon, v, l }: { icon: React.ReactNode; v: string; l: string }) {
   );
 }
 
-function SpeakerCard({ img, name, share, tall }: { img: string; name: string; share: string; tall?: boolean }) {
+function SpeakerCard({ img, name, share: _share, tall }: { img: string; name: string; share?: string; tall?: boolean }) {
   return (
     <Card className="relative overflow-hidden border-border bg-card p-0">
       <div className={tall ? "aspect-[3/4]" : "aspect-square"}>
@@ -322,7 +322,6 @@ function SpeakerCard({ img, name, share, tall }: { img: string; name: string; sh
       </div>
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-3">
         <div className="text-sm font-semibold text-white">{name}</div>
-        <div className="text-[11px] uppercase tracking-wider text-primary">{share} do programa</div>
       </div>
     </Card>
   );
