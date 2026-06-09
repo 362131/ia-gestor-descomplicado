@@ -317,11 +317,11 @@ function Stat({ icon, v, l }: { icon: React.ReactNode; v: string; l: string }) {
   );
 }
 
-function SpeakerCard({ img, name, share: _share, tall }: { img: string; name: string; share?: string; tall?: boolean }) {
+function SpeakerCard({ img, name, share: _share, tall, imgClassName }: { img: string; name: string; share?: string; tall?: boolean; imgClassName?: string }) {
   return (
     <Card className="relative overflow-hidden border-border bg-card p-0">
       <div className={tall ? "aspect-[3/4]" : "aspect-square"}>
-        <img src={img} alt={name} className="h-full w-full object-cover" />
+        <img src={img} alt={name} className={`h-full w-full ${imgClassName ?? "object-cover"}`} />
       </div>
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-3">
         <div className="text-sm font-semibold text-white">{name}</div>
