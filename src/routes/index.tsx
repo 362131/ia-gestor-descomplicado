@@ -77,8 +77,8 @@ function LandingPage() {
       <section className="mx-auto max-w-7xl px-6 pt-12 pb-24 md:pt-20">
         <div className="grid items-center gap-12 md:grid-cols-2">
           <div>
-            <Badge className="mb-5 bg-secondary text-secondary-foreground border-border">
-              <Zap className="mr-1 h-3 w-3 text-primary" /> Turma 2026 · Vagas limitadas
+            <Badge className="mb-5 animate-pulse bg-secondary text-secondary-foreground border-border px-4 py-2 text-sm md:text-base">
+              <Zap className="mr-1.5 h-4 w-4 text-primary" /> Turma 2026 · Vagas limitadas
             </Badge>
             <h1 className="font-display text-4xl font-bold leading-[1.05] md:text-6xl">
               Inteligência Artificial para Gestores{" "}
@@ -260,7 +260,7 @@ function LandingPage() {
             style={{ background: "var(--gradient-gold)" }}
           />
           <div className="relative">
-            <Badge className="mb-5 bg-primary/15 text-primary border-primary/30">
+            <Badge className="mb-5 animate-pulse bg-primary/15 text-primary border-primary/30 px-5 py-2 text-base md:text-lg">
               Vagas limitadas
             </Badge>
             <h2 className="font-display text-3xl font-bold md:text-5xl">
