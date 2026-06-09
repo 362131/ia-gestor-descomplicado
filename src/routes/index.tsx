@@ -343,8 +343,8 @@ function SpeakerBio({
   return (
     <Card className="overflow-hidden bg-card/60 border-border backdrop-blur">
       <div className="grid grid-cols-[140px_1fr] gap-5 p-6 md:grid-cols-[180px_1fr]">
-        <div className="aspect-[3/4] overflow-hidden rounded-lg">
-          <img src={img} alt={name} className="h-full w-full object-cover" />
+        <div className="aspect-[3/4] overflow-hidden rounded-lg bg-secondary">
+          <img src={img} alt={name} className="h-full w-full object-cover object-top" />
         </div>
         <div>
           <h3 className="font-display text-xl font-bold">{name}</h3>
