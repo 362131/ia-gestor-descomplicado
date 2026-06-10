@@ -49,7 +49,7 @@ const topics = [
   { n: 3, t: "Análise de dados com IA", d: "Transformando planilhas complexas em insights estratégicos em segundos.", who: "Professor Dr. Eduardo Mendes" },
   { n: 4, t: "Geração de conteúdo automatizado", d: "Escala de marketing e comunicação interna com qualidade profissional.", who: "Professor Dr. Eduardo Mendes" },
   { n: 5, t: "Otimização de fluxos de trabalho", d: "Identificação e eliminação de fricção operacional.", who: "Professor Dr. Eduardo Mendes" },
-  { n: 6, t: "IA para atendimento ao cliente", d: "Implementação de suporte inteligente e personalizado em larga escala.", who: "Professor Dr. Eduardo Mendes" },
+  { n: 6, t: "IA para atendimento ao cliente", d: "Implementação de suporte inteligente e personalizado em larga escala.", who: "Eduardo Carvalho" },
   { n: 7, t: "Processamento de documentos com IA", d: "Extração de dados, leitura de contratos e organização documental automática.", who: "Professor Dr. Eduardo Mendes" },
   { n: 8, t: "Integração de ferramentas de IA", d: "Como conectar diferentes tecnologias para criar um ecossistema coeso.", who: "Professor Dr. Eduardo Mendes" },
   { n: 9, t: "Casos de sucesso e ROI", d: "Auditoria de resultados e planejamento de próximos passos para escala contínua.", who: "Professor Dr. Eduardo Mendes" },
@@ -153,6 +153,33 @@ function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* Manifesto */}
+      <section className="mx-auto max-w-4xl px-6 pb-24">
+        <Card className="bg-card/60 border-border p-8 backdrop-blur md:p-12">
+          <p className="text-base leading-relaxed text-foreground md:text-lg">
+            O mercado global está passando por uma transformação sem precedentes. Para empresários e líderes, a Inteligência Artificial deixou de ser uma promessa futurista para se tornar a ferramenta de sobrevivência e escala mais poderosa da atualidade. O treinamento{" "}
+            <span className="font-semibold text-primary">Inteligência Artificial para Gestores na Prática</span>{" "}
+            foi desenhado para converter a complexidade tecnológica em resultados imediatos no balanço da sua empresa.
+          </p>
+          <p className="mt-5 text-base leading-relaxed text-muted-foreground md:text-lg">
+            Não se trata de teoria. É sobre como processos que hoje consomem dias da sua equipe podem ser executados com precisão superior em apenas poucos minutos. Este é o convite para você assumir o comando da inovação e liderar a transição para uma gestão exponencial.
+          </p>
+          <div className="mt-8">
+            <a href="#inscricao">
+              <Button
+                size="lg"
+                className="bg-primary text-primary-foreground hover:opacity-90"
+                style={{ boxShadow: "var(--shadow-glow)" }}
+              >
+                Quero participar agora <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </a>
+          </div>
+        </Card>
+      </section>
+
+
 
       {/* Benefits */}
       <section className="mx-auto max-w-7xl px-6 pb-24">
