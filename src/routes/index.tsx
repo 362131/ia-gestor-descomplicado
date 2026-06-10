@@ -66,7 +66,7 @@ function LandingPage() {
         <div className="flex items-center gap-3 font-display text-lg font-semibold">
           <img src={edusiaLogo.url} alt="Edusia Soluções Inteligentes" className="h-12 w-auto rounded-xl md:h-14" />
         </div>
-        <a href="#inscricao">
+        <a href="https://wa.me/5519991808312?text=Tenho%20interesse%20e%20preciso%20de%20mais%20informa%C3%A7%C3%B5es%20sobre%20o%20treinamento." target="_blank" rel="noreferrer">
           <Button variant="default" className="bg-primary text-primary-foreground hover:opacity-90">
             Quero participar
           </Button>
@@ -98,7 +98,7 @@ function LandingPage() {
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-4">
-              <a href="#inscricao">
+              <a href="https://wa.me/5519991808312?text=Tenho%20interesse%20e%20preciso%20de%20mais%20informa%C3%A7%C3%B5es%20sobre%20o%20treinamento." target="_blank" rel="noreferrer">
                 <Button
                   size="lg"
                   className="bg-primary text-primary-foreground hover:opacity-90"
@@ -166,7 +166,7 @@ function LandingPage() {
             Não se trata de teoria. É sobre como processos que hoje consomem dias da sua equipe podem ser executados com precisão superior em apenas poucos minutos. Este é o convite para você assumir o comando da inovação e liderar a transição para uma gestão exponencial.
           </p>
           <div className="mt-8">
-            <a href="#inscricao">
+            <a href="https://wa.me/5519991808312?text=Tenho%20interesse%20e%20preciso%20de%20mais%20informa%C3%A7%C3%B5es%20sobre%20o%20treinamento." target="_blank" rel="noreferrer">
               <Button
                 size="lg"
                 className="bg-primary text-primary-foreground hover:opacity-90"
@@ -301,7 +301,7 @@ function LandingPage() {
               com Inteligência Artificial aplicada.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
-              <a href="https://wa.me/?text=Quero%20participar%20do%20treinamento%20IA%20para%20Gestores%20na%20Pr%C3%A1tica" target="_blank" rel="noreferrer">
+              <a href="https://wa.me/5519991808312?text=Tenho%20interesse%20e%20preciso%20de%20mais%20informa%C3%A7%C3%B5es%20sobre%20o%20treinamento." target="_blank" rel="noreferrer">
                 <Button
                   size="lg"
                   className="bg-primary text-primary-foreground hover:opacity-90"
