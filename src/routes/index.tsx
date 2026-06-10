@@ -49,7 +49,7 @@ const topics = [
   { n: 3, t: "Análise de dados com IA", d: "Transformando planilhas complexas em insights estratégicos em segundos.", who: "Professor Dr. Eduardo Mendes" },
   { n: 4, t: "Geração de conteúdo automatizado", d: "Escala de marketing e comunicação interna com qualidade profissional.", who: "Professor Dr. Eduardo Mendes" },
   { n: 5, t: "Otimização de fluxos de trabalho", d: "Identificação e eliminação de fricção operacional.", who: "Professor Dr. Eduardo Mendes" },
-  { n: 6, t: "IA para atendimento ao cliente", d: "Implementação de suporte inteligente e personalizado em larga escala.", who: "Professor Dr. Eduardo Mendes" },
+  { n: 6, t: "IA para atendimento ao cliente", d: "Implementação de suporte inteligente e personalizado em larga escala.", who: "Eduardo Carvalho" },
   { n: 7, t: "Processamento de documentos com IA", d: "Extração de dados, leitura de contratos e organização documental automática.", who: "Professor Dr. Eduardo Mendes" },
   { n: 8, t: "Integração de ferramentas de IA", d: "Como conectar diferentes tecnologias para criar um ecossistema coeso.", who: "Professor Dr. Eduardo Mendes" },
   { n: 9, t: "Casos de sucesso e ROI", d: "Auditoria de resultados e planejamento de próximos passos para escala contínua.", who: "Professor Dr. Eduardo Mendes" },
