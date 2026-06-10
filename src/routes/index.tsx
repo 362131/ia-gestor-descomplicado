@@ -64,8 +64,8 @@ function LandingPage() {
       {/* Nav */}
       <header className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
         <div className="flex items-center gap-3 font-display text-lg font-semibold">
-          <div className="rounded-xl bg-white px-4 py-2 shadow-md">
-            <img src={edusiaLogo.url} alt="Edusia Soluções Inteligentes" className="h-16 w-auto md:h-20" />
+          <div className="flex h-10 items-center rounded-md bg-white px-3 shadow-sm">
+            <img src={edusiaLogo.url} alt="Edusia Soluções Inteligentes" className="h-7 w-auto" />
           </div>
         </div>
         <a href="#inscricao">
