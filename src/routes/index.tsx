@@ -327,7 +327,8 @@ function LandingPage() {
       </section>
 
       <footer className="border-t border-border">
-        <div className="mx-auto max-w-7xl px-6 py-8 text-center text-sm text-muted-foreground">
+        <div className="mx-auto flex max-w-7xl flex-col items-center gap-4 px-6 py-8 text-center text-sm text-muted-foreground">
+          <img src={edusiaLogo.url} alt="Edusia Soluções Inteligentes" className="h-10 w-auto rounded-xl md:h-12" />
           © 2026 IA para Gestores na Prática · Professor Dr. Eduardo Mendes & Eduardo Carvalho
         </div>
       </footer>
