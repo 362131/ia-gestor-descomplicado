@@ -44,18 +44,17 @@ export const Route = createFileRoute("/")({
 });
 
 const topics = [
-  { n: 1, t: "Introdução à IA e suas aplicações práticas", d: "Conceitos de IA e aplicações no dia a dia da gestão.", who: "Professor Dr. Eduardo Mendes" },
-  { n: 2, t: "Automação de processos com IA", d: "Como automatizar tarefas repetitivas e ganhar horas por semana.", who: "Professor Dr. Eduardo Mendes" },
-  { n: 3, t: "Análise de dados com IA", d: "Interprete grandes volumes de dados em minutos.", who: "Professor Dr. Eduardo Mendes" },
-  { n: 4, t: "IA na gestão de pessoas e recrutamento", d: "Acelere triagem, entrevistas e onboarding com IA.", who: "Eduardo Carvalho" },
-  { n: 5, t: "Geração de conteúdo automatizado", d: "Crie comunicações, relatórios e propostas com IA.", who: "Professor Dr. Eduardo Mendes" },
-  { n: 6, t: "Otimização de fluxos de trabalho", d: "Identifique e elimine gargalos com IA aplicada.", who: "Professor Dr. Eduardo Mendes" },
-  { n: 7, t: "IA para atendimento ao cliente", d: "Suporte 24/7, redução de custos e aumento de NPS.", who: "Eduardo Carvalho" },
-  { n: 8, t: "IA para desenvolvimento de lideranças", d: "Ferramentas para acelerar líderes da sua organização.", who: "Eduardo Carvalho" },
-  { n: 9, t: "Processamento de documentos com IA", d: "Extraia informação de contratos, notas e PDFs.", who: "Professor Dr. Eduardo Mendes" },
-  { n: 10, t: "Integração de ferramentas de IA", d: "Conecte as melhores ferramentas no seu stack.", who: "Professor Dr. Eduardo Mendes" },
-  { n: 11, t: "Casos de sucesso e ROI", d: "Estudos reais de retorno sobre investimento em IA.", who: "Professor Dr. Eduardo Mendes" },
-  { n: 12, t: "IA para cultura e engajamento", d: "Promova engajamento e cultura organizacional com IA.", who: "Eduardo Carvalho" },
+  { n: 1, t: "Introdução à IA e suas aplicações práticas", d: "O panorama atual e como identificar oportunidades de ouro na sua empresa.", who: "Professor Dr. Eduardo Mendes" },
+  { n: 2, t: "Automação de processos com IA", d: "Criando fluxos que trabalham sozinhos 24/7.", who: "Professor Dr. Eduardo Mendes" },
+  { n: 3, t: "Análise de dados com IA", d: "Transformando planilhas complexas em insights estratégicos em segundos.", who: "Professor Dr. Eduardo Mendes" },
+  { n: 4, t: "Geração de conteúdo automatizado", d: "Escala de marketing e comunicação interna com qualidade profissional.", who: "Professor Dr. Eduardo Mendes" },
+  { n: 5, t: "Otimização de fluxos de trabalho", d: "Identificação e eliminação de fricção operacional.", who: "Professor Dr. Eduardo Mendes" },
+  { n: 6, t: "IA para atendimento ao cliente", d: "Implementação de suporte inteligente e personalizado em larga escala.", who: "Professor Dr. Eduardo Mendes" },
+  { n: 7, t: "Processamento de documentos com IA", d: "Extração de dados, leitura de contratos e organização documental automática.", who: "Professor Dr. Eduardo Mendes" },
+  { n: 8, t: "Integração de ferramentas de IA", d: "Como conectar diferentes tecnologias para criar um ecossistema coeso.", who: "Professor Dr. Eduardo Mendes" },
+  { n: 9, t: "Casos de sucesso e ROI", d: "Auditoria de resultados e planejamento de próximos passos para escala contínua.", who: "Professor Dr. Eduardo Mendes" },
+  { n: 10, t: "IA na gestão de pessoas e recrutamento", d: "Como encontrar e selecionar os melhores talentos com auxílio algorítmico.", who: "Eduardo Carvalho" },
+  { n: 11, t: "IA para desenvolvimento de lideranças", d: "Ferramentas para feedback, monitoramento de performance e coaching assistido.", who: "Eduardo Carvalho" },
 ];
 
 function LandingPage() {
