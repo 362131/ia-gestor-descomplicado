@@ -29,7 +29,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Treinamento prático de Inteligência Artificial para gestores com Professor Dr. Eduardo Mendes e Eduardo Carvalho. 11 encontros, ROI real, automação e produtividade.",
+          "Treinamento prático de Inteligência Artificial para gestores com Professor Dr. Eduardo Mendes e Eduardo Carvalho. 12 encontros, ROI real, automação e produtividade.",
       },
       { property: "og:title", content: "IA para Gestores na Prática" },
       {
@@ -55,6 +55,7 @@ const topics = [
   { n: 9, t: "Casos de sucesso e ROI", d: "Auditoria de resultados e planejamento de próximos passos para escala contínua.", who: "Professor Dr. Eduardo Mendes" },
   { n: 10, t: "IA na gestão de pessoas e recrutamento", d: "Como encontrar e selecionar os melhores talentos com auxílio algorítmico.", who: "Eduardo Carvalho" },
   { n: 11, t: "IA para desenvolvimento de lideranças", d: "Ferramentas para feedback, monitoramento de performance e coaching assistido.", who: "Eduardo Carvalho" },
+  { n: 12, t: "IA para cultura organizacional e engajamento", d: "Mantendo o propósito humano em uma empresa tecnologicamente avançada.", who: "Eduardo Carvalho" },
 ];
 
 function LandingPage() {
@@ -63,8 +64,8 @@ function LandingPage() {
       {/* Nav */}
       <header className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
         <div className="flex items-center gap-3 font-display text-lg font-semibold">
-          <div className="rounded-xl bg-white px-4 py-2 shadow-md">
-            <img src={edusiaLogo.url} alt="Edusia Soluções Inteligentes" className="h-16 w-auto md:h-20" />
+          <div className="flex h-10 items-center rounded-md bg-white px-3 shadow-sm">
+            <img src={edusiaLogo.url} alt="Edusia Soluções Inteligentes" className="h-7 w-auto" />
           </div>
         </div>
         <a href="#inscricao">
@@ -109,12 +110,12 @@ function LandingPage() {
                 </Button>
               </a>
               <a href="#temas" className="text-sm font-medium text-muted-foreground hover:text-foreground">
-                Ver os 11 temas →
+                Ver os 12 temas →
               </a>
             </div>
 
             <div className="mt-10 grid grid-cols-3 gap-4 max-w-md">
-              <Stat icon={<Calendar className="h-4 w-4" />} v="11" l="encontros" />
+              <Stat icon={<Calendar className="h-4 w-4" />} v="12" l="encontros" />
               <Stat icon={<Clock className="h-4 w-4" />} v="3 meses" l="duração" />
               <Stat icon={<Users className="h-4 w-4" />} v="2" l="experts" />
             </div>
@@ -212,7 +213,7 @@ function LandingPage() {
       <section id="temas" className="mx-auto max-w-7xl px-6 pb-24">
         <div className="mb-10 flex items-end justify-between gap-4 flex-wrap">
           <div>
-            <h2 className="font-display text-3xl font-bold md:text-4xl">Os 11 temas do programa</h2>
+            <h2 className="font-display text-3xl font-bold md:text-4xl">Os 12 temas do programa</h2>
             <p className="mt-2 text-muted-foreground">3 meses · 4 encontros por mês · 100% prático</p>
           </div>
           <div className="flex items-center gap-3 text-xs text-muted-foreground">
