@@ -7,6 +7,7 @@ import "@fontsource/inter/500.css";
 import "@fontsource/inter/600.css";
 import eduardoMendes from "@/assets/eduardo-mendes.asset.json";
 import eduardoCarvalho from "@/assets/eduardo-carvalho.asset.json";
+import edusiaLogo from "@/assets/edusia-logo.asset.json";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -62,9 +63,8 @@ function LandingPage() {
     <div className="min-h-screen" style={{ background: "var(--gradient-hero)" }}>
       {/* Nav */}
       <header className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
-        <div className="flex items-center gap-2 font-display text-lg font-semibold">
-          <Sparkles className="h-5 w-5 text-primary" />
-          IA na Prática
+        <div className="flex items-center gap-3 font-display text-lg font-semibold">
+          <img src={edusiaLogo.url} alt="Edusia Soluções Inteligentes" className="h-10 w-auto md:h-12" />
         </div>
         <a href="#inscricao">
           <Button variant="default" className="bg-primary text-primary-foreground hover:opacity-90">
