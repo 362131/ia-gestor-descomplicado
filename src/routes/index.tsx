@@ -29,7 +29,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Treinamento prático de Inteligência Artificial para gestores com Professor Dr. Eduardo Mendes e Eduardo Carvalho. 12 encontros, ROI real, automação e produtividade.",
+          "Treinamento prático de Inteligência Artificial para gestores com Professor Dr. Eduardo Mendes e Eduardo Carvalho. 11 encontros, ROI real, automação e produtividade.",
       },
       { property: "og:title", content: "IA para Gestores na Prática" },
       {
@@ -109,7 +109,7 @@ function LandingPage() {
                 </Button>
               </a>
               <a href="#temas" className="text-sm font-medium text-muted-foreground hover:text-foreground">
-                Ver os 12 temas →
+                Ver os 11 temas →
               </a>
             </div>
 
@@ -212,7 +212,7 @@ function LandingPage() {
       <section id="temas" className="mx-auto max-w-7xl px-6 pb-24">
         <div className="mb-10 flex items-end justify-between gap-4 flex-wrap">
           <div>
-            <h2 className="font-display text-3xl font-bold md:text-4xl">Os 12 temas do programa</h2>
+            <h2 className="font-display text-3xl font-bold md:text-4xl">Os 11 temas do programa</h2>
             <p className="mt-2 text-muted-foreground">3 meses · 4 encontros por mês · 100% prático</p>
           </div>
           <div className="flex items-center gap-3 text-xs text-muted-foreground">
