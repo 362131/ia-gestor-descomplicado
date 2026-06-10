@@ -64,7 +64,7 @@ function LandingPage() {
       {/* Nav */}
       <header className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
         <div className="flex items-center gap-3 font-display text-lg font-semibold">
-          <img src={edusiaLogo.url} alt="Edusia Soluções Inteligentes" className="h-16 w-auto rounded-md bg-white md:h-20" />
+          <img src={edusiaLogo.url} alt="Edusia Soluções Inteligentes" className="h-16 w-auto md:h-20" />
         </div>
         <a href="#inscricao">
           <Button variant="default" className="bg-primary text-primary-foreground hover:opacity-90">
@@ -156,13 +156,13 @@ function LandingPage() {
 
       {/* Manifesto */}
       <section className="mx-auto max-w-4xl px-6 pb-24">
-        <Card className="bg-card/60 border-border p-8 backdrop-blur md:p-12">
-          <p className="text-base leading-relaxed text-foreground md:text-lg">
+        <Card className="border-border bg-card p-8 md:p-12">
+          <p className="text-justify text-base leading-relaxed text-foreground md:text-lg">
             O mercado global está passando por uma transformação sem precedentes. Para empresários e líderes, a Inteligência Artificial deixou de ser uma promessa futurista para se tornar a ferramenta de sobrevivência e escala mais poderosa da atualidade. O treinamento{" "}
             <span className="font-semibold text-primary">Inteligência Artificial para Gestores na Prática</span>{" "}
             foi desenhado para converter a complexidade tecnológica em resultados imediatos no balanço da sua empresa.
           </p>
-          <p className="mt-5 text-base leading-relaxed text-muted-foreground md:text-lg">
+          <p className="mt-5 text-justify text-base leading-relaxed text-muted-foreground md:text-lg">
             Não se trata de teoria. É sobre como processos que hoje consomem dias da sua equipe podem ser executados com precisão superior em apenas poucos minutos. Este é o convite para você assumir o comando da inovação e liderar a transição para uma gestão exponencial.
           </p>
           <div className="mt-8">
