@@ -114,7 +114,7 @@ function LandingPage() {
             </div>
 
             <div className="mt-10 grid grid-cols-3 gap-4 max-w-md">
-              <Stat icon={<Calendar className="h-4 w-4" />} v="12" l="encontros" />
+              <Stat icon={<Calendar className="h-4 w-4" />} v="11" l="encontros" />
               <Stat icon={<Clock className="h-4 w-4" />} v="3 meses" l="duração" />
               <Stat icon={<Users className="h-4 w-4" />} v="2" l="experts" />
             </div>
