@@ -64,7 +64,7 @@ function LandingPage() {
       {/* Nav */}
       <header className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
         <div className="flex items-center gap-3 font-display text-lg font-semibold">
-          <img src={edusiaLogo.url} alt="Edusia Soluções Inteligentes" className="h-12 w-auto rounded-xl md:h-14" />
+          <img src={edusiaLogo.url} alt="Edusia Soluções Inteligentes" className="h-9 w-auto rounded-xl md:h-11" />
         </div>
         <a href="https://wa.me/5519991808312?text=Tenho%20interesse%20e%20preciso%20de%20mais%20informa%C3%A7%C3%B5es%20sobre%20o%20treinamento." target="_blank" rel="noreferrer">
           <Button variant="default" className="bg-primary text-primary-foreground hover:opacity-90">
@@ -327,7 +327,8 @@ function LandingPage() {
       </section>
 
       <footer className="border-t border-border">
-        <div className="mx-auto max-w-7xl px-6 py-8 text-center text-sm text-muted-foreground">
+        <div className="mx-auto flex max-w-7xl flex-col items-center gap-4 px-6 py-8 text-center text-sm text-muted-foreground">
+          <img src={edusiaLogo.url} alt="Edusia Soluções Inteligentes" className="h-10 w-auto rounded-xl md:h-12" />
           © 2026 IA para Gestores na Prática · Professor Dr. Eduardo Mendes & Eduardo Carvalho
         </div>
       </footer>
