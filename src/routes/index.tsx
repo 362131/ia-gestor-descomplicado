@@ -29,7 +29,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Treinamento prático de Inteligência Artificial para gestores com Professor Dr. Eduardo Mendes e Eduardo Carvalho. 12 encontros, ROI real, automação e produtividade.",
+          "Treinamento prático de Inteligência Artificial para gestores com Professor Dr. Eduardo Mendes e Eduardo Carvalho. 11 encontros, ROI real, automação e produtividade.",
       },
       { property: "og:title", content: "IA para Gestores na Prática" },
       {
@@ -44,18 +44,17 @@ export const Route = createFileRoute("/")({
 });
 
 const topics = [
-  { n: 1, t: "Introdução à IA e suas aplicações práticas", d: "Conceitos de IA e aplicações no dia a dia da gestão.", who: "Professor Dr. Eduardo Mendes" },
-  { n: 2, t: "Automação de processos com IA", d: "Como automatizar tarefas repetitivas e ganhar horas por semana.", who: "Professor Dr. Eduardo Mendes" },
-  { n: 3, t: "Análise de dados com IA", d: "Interprete grandes volumes de dados em minutos.", who: "Professor Dr. Eduardo Mendes" },
-  { n: 4, t: "IA na gestão de pessoas e recrutamento", d: "Acelere triagem, entrevistas e onboarding com IA.", who: "Eduardo Carvalho" },
-  { n: 5, t: "Geração de conteúdo automatizado", d: "Crie comunicações, relatórios e propostas com IA.", who: "Professor Dr. Eduardo Mendes" },
-  { n: 6, t: "Otimização de fluxos de trabalho", d: "Identifique e elimine gargalos com IA aplicada.", who: "Professor Dr. Eduardo Mendes" },
-  { n: 7, t: "IA para atendimento ao cliente", d: "Suporte 24/7, redução de custos e aumento de NPS.", who: "Eduardo Carvalho" },
-  { n: 8, t: "IA para desenvolvimento de lideranças", d: "Ferramentas para acelerar líderes da sua organização.", who: "Eduardo Carvalho" },
-  { n: 9, t: "Processamento de documentos com IA", d: "Extraia informação de contratos, notas e PDFs.", who: "Professor Dr. Eduardo Mendes" },
-  { n: 10, t: "Integração de ferramentas de IA", d: "Conecte as melhores ferramentas no seu stack.", who: "Professor Dr. Eduardo Mendes" },
-  { n: 11, t: "Casos de sucesso e ROI", d: "Estudos reais de retorno sobre investimento em IA.", who: "Professor Dr. Eduardo Mendes" },
-  { n: 12, t: "IA para cultura e engajamento", d: "Promova engajamento e cultura organizacional com IA.", who: "Eduardo Carvalho" },
+  { n: 1, t: "Introdução à IA e suas aplicações práticas", d: "O panorama atual e como identificar oportunidades de ouro na sua empresa.", who: "Professor Dr. Eduardo Mendes" },
+  { n: 2, t: "Automação de processos com IA", d: "Criando fluxos que trabalham sozinhos 24/7.", who: "Professor Dr. Eduardo Mendes" },
+  { n: 3, t: "Análise de dados com IA", d: "Transformando planilhas complexas em insights estratégicos em segundos.", who: "Professor Dr. Eduardo Mendes" },
+  { n: 4, t: "Geração de conteúdo automatizado", d: "Escala de marketing e comunicação interna com qualidade profissional.", who: "Professor Dr. Eduardo Mendes" },
+  { n: 5, t: "Otimização de fluxos de trabalho", d: "Identificação e eliminação de fricção operacional.", who: "Professor Dr. Eduardo Mendes" },
+  { n: 6, t: "IA para atendimento ao cliente", d: "Implementação de suporte inteligente e personalizado em larga escala.", who: "Professor Dr. Eduardo Mendes" },
+  { n: 7, t: "Processamento de documentos com IA", d: "Extração de dados, leitura de contratos e organização documental automática.", who: "Professor Dr. Eduardo Mendes" },
+  { n: 8, t: "Integração de ferramentas de IA", d: "Como conectar diferentes tecnologias para criar um ecossistema coeso.", who: "Professor Dr. Eduardo Mendes" },
+  { n: 9, t: "Casos de sucesso e ROI", d: "Auditoria de resultados e planejamento de próximos passos para escala contínua.", who: "Professor Dr. Eduardo Mendes" },
+  { n: 10, t: "IA na gestão de pessoas e recrutamento", d: "Como encontrar e selecionar os melhores talentos com auxílio algorítmico.", who: "Eduardo Carvalho" },
+  { n: 11, t: "IA para desenvolvimento de lideranças", d: "Ferramentas para feedback, monitoramento de performance e coaching assistido.", who: "Eduardo Carvalho" },
 ];
 
 function LandingPage() {
@@ -64,7 +63,9 @@ function LandingPage() {
       {/* Nav */}
       <header className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
         <div className="flex items-center gap-3 font-display text-lg font-semibold">
-          <img src={edusiaLogo.url} alt="Edusia Soluções Inteligentes" className="h-20 w-auto md:h-24" />
+          <div className="rounded-xl bg-white px-4 py-2 shadow-md">
+            <img src={edusiaLogo.url} alt="Edusia Soluções Inteligentes" className="h-16 w-auto md:h-20" />
+          </div>
         </div>
         <a href="#inscricao">
           <Button variant="default" className="bg-primary text-primary-foreground hover:opacity-90">
@@ -108,12 +109,12 @@ function LandingPage() {
                 </Button>
               </a>
               <a href="#temas" className="text-sm font-medium text-muted-foreground hover:text-foreground">
-                Ver os 12 temas →
+                Ver os 11 temas →
               </a>
             </div>
 
             <div className="mt-10 grid grid-cols-3 gap-4 max-w-md">
-              <Stat icon={<Calendar className="h-4 w-4" />} v="12" l="encontros" />
+              <Stat icon={<Calendar className="h-4 w-4" />} v="11" l="encontros" />
               <Stat icon={<Clock className="h-4 w-4" />} v="3 meses" l="duração" />
               <Stat icon={<Users className="h-4 w-4" />} v="2" l="experts" />
             </div>
@@ -211,7 +212,7 @@ function LandingPage() {
       <section id="temas" className="mx-auto max-w-7xl px-6 pb-24">
         <div className="mb-10 flex items-end justify-between gap-4 flex-wrap">
           <div>
-            <h2 className="font-display text-3xl font-bold md:text-4xl">Os 12 temas do programa</h2>
+            <h2 className="font-display text-3xl font-bold md:text-4xl">Os 11 temas do programa</h2>
             <p className="mt-2 text-muted-foreground">3 meses · 4 encontros por mês · 100% prático</p>
           </div>
           <div className="flex items-center gap-3 text-xs text-muted-foreground">
