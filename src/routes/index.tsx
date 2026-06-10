@@ -55,6 +55,7 @@ const topics = [
   { n: 9, t: "Casos de sucesso e ROI", d: "Auditoria de resultados e planejamento de próximos passos para escala contínua.", who: "Professor Dr. Eduardo Mendes" },
   { n: 10, t: "IA na gestão de pessoas e recrutamento", d: "Como encontrar e selecionar os melhores talentos com auxílio algorítmico.", who: "Eduardo Carvalho" },
   { n: 11, t: "IA para desenvolvimento de lideranças", d: "Ferramentas para feedback, monitoramento de performance e coaching assistido.", who: "Eduardo Carvalho" },
+  { n: 12, t: "IA para cultura organizacional e engajamento", d: "Mantendo o propósito humano em uma empresa tecnologicamente avançada.", who: "Eduardo Carvalho" },
 ];
 
 function LandingPage() {
