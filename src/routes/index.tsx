@@ -44,18 +44,18 @@ export const Route = createFileRoute("/")({
 });
 
 const topics = [
-  { n: 1, t: "Introdução à IA e suas aplicações práticas", d: "O panorama atual e como identificar oportunidades de ouro na sua empresa.", who: "Professor Dr. Eduardo Mendes" },
-  { n: 2, t: "Automação de processos com IA", d: "Criando fluxos que trabalham sozinhos 24/7.", who: "Professor Dr. Eduardo Mendes" },
-  { n: 3, t: "Análise de dados com IA", d: "Transformando planilhas complexas em insights estratégicos em segundos.", who: "Professor Dr. Eduardo Mendes" },
-  { n: 4, t: "Geração de conteúdo automatizado", d: "Escala de marketing e comunicação interna com qualidade profissional.", who: "Professor Dr. Eduardo Mendes" },
-  { n: 5, t: "Otimização de fluxos de trabalho", d: "Identificação e eliminação de fricção operacional.", who: "Professor Dr. Eduardo Mendes" },
-  { n: 6, t: "IA para atendimento ao cliente", d: "Implementação de suporte inteligente e personalizado em larga escala.", who: "Eduardo Carvalho" },
-  { n: 7, t: "Processamento de documentos com IA", d: "Extração de dados, leitura de contratos e organização documental automática.", who: "Professor Dr. Eduardo Mendes" },
-  { n: 8, t: "Integração de ferramentas de IA", d: "Como conectar diferentes tecnologias para criar um ecossistema coeso.", who: "Professor Dr. Eduardo Mendes" },
-  { n: 9, t: "Casos de sucesso e ROI", d: "Auditoria de resultados e planejamento de próximos passos para escala contínua.", who: "Professor Dr. Eduardo Mendes" },
-  { n: 10, t: "IA na gestão de pessoas e recrutamento", d: "Como encontrar e selecionar os melhores talentos com auxílio algorítmico.", who: "Eduardo Carvalho" },
-  { n: 11, t: "IA para desenvolvimento de lideranças", d: "Ferramentas para feedback, monitoramento de performance e coaching assistido.", who: "Eduardo Carvalho" },
-  { n: 12, t: "IA para cultura organizacional e engajamento", d: "Mantendo o propósito humano em uma empresa tecnologicamente avançada.", who: "Eduardo Carvalho" },
+  { n: 1, t: "Introdução à IA e suas aplicações práticas", who: "Professor Dr. Eduardo Mendes" },
+  { n: 2, t: "Automação de processos com IA", who: "Professor Dr. Eduardo Mendes" },
+  { n: 3, t: "Análise de dados com IA", who: "Professor Dr. Eduardo Mendes" },
+  { n: 4, t: "Engenharia de Prompt", who: "Professor Dr. Eduardo Mendes" },
+  { n: 5, t: "Otimização de fluxos de trabalho", who: "Professor Dr. Eduardo Mendes" },
+  { n: 6, t: "IA para atendimento ao cliente", who: "Eduardo Carvalho" },
+  { n: 7, t: "Processamento de documentos com IA", who: "Professor Dr. Eduardo Mendes" },
+  { n: 8, t: "Integração de ferramentas de IA", who: "Professor Dr. Eduardo Mendes" },
+  { n: 9, t: "Casos de sucesso e ROI", who: "Professor Dr. Eduardo Mendes" },
+  { n: 10, t: "IA na gestão de pessoas e recrutamento", who: "Eduardo Carvalho" },
+  { n: 11, t: "IA para desenvolvimento de lideranças", who: "Eduardo Carvalho" },
+  { n: 12, t: "IA para cultura organizacional e engajamento", who: "Eduardo Carvalho" },
 ];
 
 function LandingPage() {
@@ -273,7 +273,6 @@ function LandingPage() {
               <h3 className="mt-3 font-display text-lg font-semibold leading-snug">
                 {tp.t}
               </h3>
-              <p className="mt-2 text-sm text-muted-foreground">{tp.d}</p>
             </Card>
           ))}
         </div>
