@@ -7,6 +7,7 @@ import "@fontsource/inter/500.css";
 import "@fontsource/inter/600.css";
 import eduardoMendes from "@/assets/eduardo-mendes.asset.json";
 import eduardoCarvalho from "@/assets/eduardo-carvalho.asset.json";
+import edusiaLogo from "@/assets/edusia-logo.asset.json";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
