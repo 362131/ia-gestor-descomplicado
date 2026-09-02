@@ -1,0 +1,11 @@
+{
+  "name": "radar-criativos-instagram",
+  "description": "Analisa o desempenho dos posts do Instagram (@eduardo.carvalho.oficial) via Windsor.ai, ranqueia os criativos, compara o campeão com posts do mesmo formato, gera sugestões de melhoria de perfil e envia um relatório em HTML por e-mail via Gmail.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Eduardo Carvalho"
+  },
+  "skills": [
+    "./skills/relatorio-criativos-instagram/SKILL.md"
+  ]
+}
