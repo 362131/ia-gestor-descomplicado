@@ -15,6 +15,24 @@ CREATE TABLE IF NOT EXISTS contacts (
   created_at DATETIME NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE IF NOT EXISTS users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(120) NOT NULL,
+  email VARCHAR(190) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  api_token VARCHAR(64) NOT NULL UNIQUE,
+  is_admin TINYINT(1) NOT NULL DEFAULT 0,
+  created_at DATETIME NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Conta inicial de administrador — NÃO rode este INSERT com estes valores de
+-- exemplo. Gere o hash da senha e um token aleatório antes (veja README.md,
+-- seção "Login individual por pessoa") e substitua os placeholders abaixo.
+-- Depois de logar, use "Gerenciar equipe" dentro do próprio painel para
+-- cadastrar o restante da equipe — não precisa editar SQL de novo.
+INSERT IGNORE INTO users (nome, email, password_hash, api_token, is_admin, created_at) VALUES
+  ('SEU NOME', 'seu-email@exemplo.com.br', 'COLE_AQUI_O_HASH_BCRYPT_DA_SENHA', 'COLE_AQUI_UM_TOKEN_ALEATORIO', 1, NOW());
+
 CREATE TABLE IF NOT EXISTS sellers (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nome VARCHAR(120) NOT NULL UNIQUE

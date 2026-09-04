@@ -21,12 +21,6 @@ function fail(int $status, string $msg): void {
     exit;
 }
 
-// --- autenticação simples por token de equipe ---
-$sentToken = $_SERVER['HTTP_X_API_TOKEN'] ?? '';
-if (!hash_equals((string)$config['api_token'], (string)$sentToken)) {
-    fail(401, 'Token inválido. Verifique o token configurado no painel.');
-}
-
 try {
     $pdo = new PDO(
         "mysql:host={$config['db_host']};dbname={$config['db_name']};charset=utf8mb4",
@@ -49,6 +43,49 @@ function reqStr($v, string $field, bool $required = true): string {
     $s = is_string($v) ? trim($v) : '';
     if ($required && $s === '') fail(422, "Campo obrigatório ausente: $field");
     return $s;
+}
+
+// --- login: não exige token, verifica e-mail + senha ---
+if ($action === 'login') {
+    $email = strtolower(reqStr($input['email'] ?? null, 'email'));
+    $senha = reqStr($input['senha'] ?? null, 'senha');
+
+    $stmt = $pdo->prepare('SELECT * FROM users WHERE email = ?');
+    $stmt->execute([$email]);
+    $user = $stmt->fetch();
+
+    if (!$user || !password_verify($senha, $user['password_hash'])) {
+        fail(401, 'E-mail ou senha inválidos.');
+    }
+
+    echo json_encode([
+        'token' => $user['api_token'],
+        'nome' => $user['nome'],
+        'isAdmin' => (bool)$user['is_admin'],
+    ]);
+    exit;
+}
+
+// --- autenticação: token mestre (config.php) OU token de um usuário cadastrado ---
+$sentToken = $_SERVER['HTTP_X_API_TOKEN'] ?? '';
+$currentUser = null; // null quando autenticado pelo token mestre
+
+if (hash_equals((string)$config['api_token'], (string)$sentToken)) {
+    $currentUser = ['id' => null, 'nome' => 'Administrador', 'is_admin' => 1];
+} else {
+    $stmt = $pdo->prepare('SELECT id, nome, is_admin FROM users WHERE api_token = ?');
+    $stmt->execute([$sentToken]);
+    $currentUser = $stmt->fetch() ?: null;
+}
+
+if (!$currentUser) {
+    fail(401, 'Sessão inválida. Faça login novamente.');
+}
+
+function requireAdmin($currentUser): void {
+    if (empty($currentUser['is_admin'])) {
+        fail(403, 'Apenas administradores podem fazer isso.');
+    }
 }
 
 switch ($action) {
@@ -185,6 +222,69 @@ switch ($action) {
     case 'add_seller': {
         $nome = reqStr($input['nome'] ?? null, 'nome');
         $pdo->prepare('INSERT IGNORE INTO sellers (nome) VALUES (?)')->execute([$nome]);
+        echo json_encode(['ok' => true]);
+        break;
+    }
+
+    case 'change_password': {
+        if (empty($currentUser['id'])) {
+            fail(400, 'Entre com seu e-mail e senha (não com o token mestre) para trocar a senha.');
+        }
+        $novaSenha = reqStr($input['novaSenha'] ?? null, 'novaSenha');
+        if (strlen($novaSenha) < 6) {
+            fail(422, 'A nova senha precisa ter pelo menos 6 caracteres.');
+        }
+        $hash = password_hash($novaSenha, PASSWORD_DEFAULT);
+        $pdo->prepare('UPDATE users SET password_hash = ? WHERE id = ?')->execute([$hash, $currentUser['id']]);
+        echo json_encode(['ok' => true]);
+        break;
+    }
+
+    case 'list_users': {
+        requireAdmin($currentUser);
+        $rows = $pdo->query('SELECT id, nome, email, is_admin, created_at FROM users ORDER BY nome')->fetchAll();
+        echo json_encode(array_map(function($r) {
+            return [
+                'id' => (int)$r['id'],
+                'nome' => $r['nome'],
+                'email' => $r['email'],
+                'isAdmin' => (bool)$r['is_admin'],
+                'createdAt' => str_replace(' ', 'T', $r['created_at']),
+            ];
+        }, $rows));
+        break;
+    }
+
+    case 'add_user': {
+        requireAdmin($currentUser);
+        $nome = reqStr($input['nome'] ?? null, 'nome');
+        $email = strtolower(reqStr($input['email'] ?? null, 'email'));
+        $senha = reqStr($input['senha'] ?? null, 'senha');
+        if (strlen($senha) < 6) {
+            fail(422, 'A senha precisa ter pelo menos 6 caracteres.');
+        }
+        $hash = password_hash($senha, PASSWORD_DEFAULT);
+        $token = bin2hex(random_bytes(24));
+        try {
+            $pdo->prepare('
+                INSERT INTO users (nome, email, password_hash, api_token, is_admin, created_at)
+                VALUES (?, ?, ?, ?, 0, ?)
+            ')->execute([$nome, $email, $hash, $token, date('Y-m-d H:i:s')]);
+        } catch (PDOException $e) {
+            fail(409, 'Já existe uma conta com esse e-mail.');
+        }
+        $pdo->prepare('INSERT IGNORE INTO sellers (nome) VALUES (?)')->execute([$nome]);
+        echo json_encode(['ok' => true]);
+        break;
+    }
+
+    case 'delete_user': {
+        requireAdmin($currentUser);
+        $id = reqStr($input['id'] ?? null, 'id');
+        if ($currentUser['id'] !== null && (int)$id === (int)$currentUser['id']) {
+            fail(400, 'Você não pode remover a própria conta.');
+        }
+        $pdo->prepare('DELETE FROM users WHERE id = ?')->execute([$id]);
         echo json_encode(['ok' => true]);
         break;
     }

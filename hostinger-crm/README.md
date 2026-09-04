@@ -78,8 +78,45 @@ experiência técnica.
 ### Passo 5 — Usar o painel
 
 1. Abra no navegador: `https://SEUDOMINIO.com/crm/` (troque `SEUDOMINIO.com` pelo seu domínio real).
-2. Digite o token do Passo 3 (`NXUqLwqxjJdOmgfRCMJby5mTrOPl_CfD`, se não trocou).
+2. Entre com o **e-mail e senha** da sua conta (veja "Login individual" abaixo).
 3. Pronto — cadastre um contato de teste para confirmar que está tudo salvando.
+
+---
+
+## Login individual por pessoa
+
+Cada vendedor tem sua própria conta (e-mail + senha), em vez de um token único
+compartilhado. Só a **primeira conta (administrador)** precisa ser criada
+direto no banco — todas as outras são cadastradas depois, de dentro do
+próprio painel, pelo botão **"Gerenciar equipe"** (só visível para quem é
+administrador).
+
+### Criando a primeira conta (administrador)
+
+Como senhas não devem ficar guardadas em texto puro em lugar nenhum
+(nem aqui, nem no banco), gere o hash da senha e um token antes de rodar o
+SQL. Se você tiver PHP instalado em algum computador (ou peça para quem está
+te ajudando), rode:
+
+```
+php -r "echo password_hash('SUA_SENHA_AQUI', PASSWORD_DEFAULT) . PHP_EOL; echo bin2hex(random_bytes(24)) . PHP_EOL;"
+```
+
+Isso imprime duas linhas: o **hash** (primeira) e um **token** aleatório
+(segunda). Cole os dois no `INSERT` de exemplo no final do `schema.sql`,
+junto com seu nome e e-mail, e rode no phpMyAdmin.
+
+Depois disso, entre no painel com esse e-mail e senha — você já é
+administrador e pode cadastrar o resto da equipe direto pela tela
+**"Gerenciar equipe"**, sem precisar mexer em SQL de novo.
+
+Qualquer pessoa logada pode trocar a própria senha a qualquer momento pelo
+botão **"Trocar minha senha"**, no canto superior direito do painel.
+
+O `api_token` que ainda existe em `config.php` continua funcionando como uma
+"chave mestra" de administrador (útil se você perder acesso a todas as
+contas), mas não aparece mais na tela de login — o dia a dia da equipe é só
+e-mail e senha.
 
 ---
 
@@ -87,15 +124,13 @@ experiência técnica.
 
 | Mensagem/sintoma | O que fazer |
 |---|---|
-| "Token inválido" | Confira se digitou exatamente o mesmo texto do `api_token` em `config.php`, sem espaços extras. |
+| "E-mail ou senha inválidos" | Confira se digitou certinho; se esqueceu a senha, peça para o administrador (Eduardo Carvalho) redefinir pelo "Gerenciar equipe", ou recrie a conta. |
+| "Sessão inválida. Faça login novamente." | Sua sessão expirou ou foi encerrada — é só entrar de novo com e-mail e senha. |
 | "Não foi possível conectar à API" | Confirme se `api.php` e `config.php` estão na mesma pasta que `index.html` no servidor. |
 | "Falha ao conectar ao banco de dados" | Revise `db_name`, `db_user` e `db_pass` em `config.php` — algum deles está errado. |
 | Página em branco | Confirme se o site tem SSL ativo (hPanel → SSL → ativar, é gratuito) e acesse com `https://`. |
 
 ## Perguntas que você não precisa resolver agora
 
-- **Login individual por vendedor:** não existe nesta versão simples — é um único
-  token para toda a equipe, como uma "senha da sala". Se um dia quiser login
-  por pessoa, me avise e eu construo essa parte depois.
 - **Backup:** dentro do painel tem um botão **"Exportar CSV"** — use-o de vez
   em quando para guardar uma cópia dos dados fora do banco.

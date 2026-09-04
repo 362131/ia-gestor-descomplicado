@@ -177,9 +177,10 @@
 <div class="gate" id="gateScreen">
   <div class="gate-card">
     <h2>Painel Comercial EdusIA</h2>
-    <p>Digite o token de acesso da equipe para entrar no CRM compartilhado.</p>
+    <p>Entre com o e-mail e a senha da sua conta para acessar o CRM compartilhado.</p>
     <form id="gateForm">
-      <div class="field field-req"><label>Token de acesso</label><input required type="password" id="gateToken" autocomplete="off"></div>
+      <div class="field field-req"><label>E-mail</label><input required type="email" id="gateEmail" autocomplete="username"></div>
+      <div class="field field-req"><label>Senha</label><input required type="password" id="gateSenha" autocomplete="current-password"></div>
       <button type="submit" class="btn btn-primary" style="width:100%;">Entrar</button>
       <div class="gate-error" id="gateError"></div>
     </form>
@@ -198,6 +199,11 @@
       <span class="pillar-chip">Labs</span>
       <span class="pillar-chip">Studio</span>
       <span class="pillar-chip">Eventos</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:.6rem;">
+      <span id="meuNomeLabel" style="font-size:.82rem;color:var(--ash);"></span>
+      <button class="btn btn-ghost btn-sm" id="btnTrocarSenha">Trocar minha senha</button>
+      <button class="btn btn-ghost btn-sm" id="btnGerenciarEquipe" hidden>Gerenciar equipe</button>
     </div>
   </header>
 
@@ -301,6 +307,25 @@
   </div>
 </div>
 
+<div class="modal-backdrop" id="teamModalBackdrop" hidden>
+  <div class="modal" style="width:min(640px,100%);">
+    <h3>Gerenciar equipe</h3>
+    <div id="teamList" style="margin-bottom:1.2rem;"></div>
+    <div class="section-title" style="margin-top:0;font-size:.95rem;">Adicionar novo membro</div>
+    <form id="formNovoUsuario">
+      <div class="row2">
+        <div class="field field-req"><label>Nome completo</label><input required name="nome"></div>
+        <div class="field field-req"><label>E-mail</label><input required type="email" name="email"></div>
+      </div>
+      <div class="field field-req"><label>Senha inicial</label><input required type="text" name="senha" placeholder="mínimo 6 caracteres"></div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-ghost" id="btnFecharTeamModal">Fechar</button>
+        <button type="submit" class="btn btn-primary">Adicionar membro</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script>
 (function(){
   "use strict";
@@ -326,10 +351,11 @@
   var els = {};
   ["kpiGrid","listBody","listCount","detailPanel","fSearch","fVendedor","fEstagio","fPilar","fTemp","fPeriodo",
    "modalBackdrop","formContato","btnNovoContato","btnCancelModal","discPick","inpVendedor","btnExport",
-   "firstUseBanner","dismissBanner","connError","gateScreen","appRoot","gateForm","gateToken","gateError"
+   "firstUseBanner","dismissBanner","connError","gateScreen","appRoot","gateForm","gateEmail","gateSenha","gateError",
+   "meuNomeLabel","btnTrocarSenha","btnGerenciarEquipe","teamModalBackdrop","teamList","formNovoUsuario","btnFecharTeamModal"
   ].forEach(function(id){ els[id]=document.getElementById(id); });
 
-  var state = { contacts: [], sellers: [], selectedId: null, ready:false, token:"" };
+  var state = { contacts: [], sellers: [], selectedId: null, ready:false, token:"", meuNome:"", isAdmin:false };
 
   function uid(){ return Math.random().toString(36).slice(2,10) + Date.now().toString(36); }
   function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
@@ -395,6 +421,10 @@
       renderAll();
     }catch(e){
       console.error(e);
+      if(e.code === "http_401"){
+        logout("Sua sessão expirou. Faça login novamente.");
+        return;
+      }
       state.ready = true;
       state.contacts = [];
       renderAll();
@@ -403,33 +433,51 @@
   }
 
   // ---------- Login gate ----------
-  (function initGate(){
-    var saved = "";
-    try{ saved = sessionStorage.getItem("edusia_crm_token") || ""; }catch(e){}
-    if(saved){ tryEnter(saved); }
+  function saveSession(){
+    try{ sessionStorage.setItem("edusia_crm_session", JSON.stringify({token:state.token, nome:state.meuNome, isAdmin:state.isAdmin})); }catch(e){}
+  }
+  function logout(msg){
+    try{ sessionStorage.removeItem("edusia_crm_session"); }catch(e){}
+    state.token = ""; state.meuNome = ""; state.isAdmin = false;
+    els.appRoot.hidden = true;
+    els.gateScreen.hidden = false;
+    els.gateError.textContent = msg || "";
+  }
 
-    els.gateForm.addEventListener("submit", function(ev){
+  (function initGate(){
+    var saved = null;
+    try{ saved = JSON.parse(sessionStorage.getItem("edusia_crm_session") || "null"); }catch(e){}
+    if(saved && saved.token){
+      enterApp(saved.token, saved.nome, saved.isAdmin);
+    }
+
+    els.gateForm.addEventListener("submit", async function(ev){
       ev.preventDefault();
-      tryEnter(els.gateToken.value.trim());
+      els.gateError.textContent = "";
+      var email = els.gateEmail.value.trim();
+      var senha = els.gateSenha.value;
+      try{
+        var res = await api("login", {body:{email:email, senha:senha}});
+        enterApp(res.token, res.nome, res.isAdmin);
+      }catch(e){
+        els.gateError.textContent = e.message || "Não foi possível entrar.";
+      }
     });
   })();
 
-  async function tryEnter(token){
-    if(!token) return;
+  function enterApp(token, nome, isAdmin){
     state.token = token;
-    els.gateError.textContent = "";
-    try{
-      await api("list"); // valida o token
-      try{ sessionStorage.setItem("edusia_crm_token", token); }catch(e){}
-      els.gateScreen.hidden = true;
-      els.appRoot.hidden = false;
-      boot();
-    }catch(e){
-      els.gateError.textContent = e.message || "Token inválido.";
-    }
+    state.meuNome = nome || "";
+    state.isAdmin = !!isAdmin;
+    saveSession();
+    els.gateScreen.hidden = true;
+    els.appRoot.hidden = false;
+    boot();
   }
 
   function boot(){
+    els.meuNomeLabel.textContent = state.meuNome ? ("Olá, " + state.meuNome) : "";
+    els.btnGerenciarEquipe.hidden = !state.isAdmin;
     initBanner();
     wireStaticUI();
     loadContacts();
@@ -460,8 +508,8 @@
       console.error(e);
       state.sellers = [];
     }
-    var prefill = "";
-    try{ prefill = localStorage.getItem("edusia_crm_meu_nome") || ""; }catch(e){}
+    var prefill = state.meuNome || "";
+    if(!prefill){ try{ prefill = localStorage.getItem("edusia_crm_meu_nome") || ""; }catch(e){} }
     renderSellerOptions(els.inpVendedor, prefill);
   }
 
@@ -828,6 +876,77 @@
       document.body.appendChild(a); a.click(); a.remove();
       setTimeout(function(){ URL.revokeObjectURL(url); }, 2000);
     });
+
+    els.btnTrocarSenha.addEventListener("click", async function(){
+      var nova = prompt("Digite sua nova senha (mínimo 6 caracteres):");
+      if(nova === null) return;
+      if(nova.length < 6){ toast("A senha precisa ter pelo menos 6 caracteres."); return; }
+      var confirma = prompt("Confirme a nova senha:");
+      if(nova !== confirma){ toast("As senhas não coincidem."); return; }
+      try{
+        await api("change_password", {body:{novaSenha:nova}});
+        toast("Senha alterada com sucesso.");
+      }catch(e){
+        console.error(e);
+        toast(e.message || "Não foi possível trocar a senha.");
+      }
+    });
+
+    els.btnGerenciarEquipe.addEventListener("click", function(){
+      els.teamModalBackdrop.hidden = false;
+      loadTeamList();
+    });
+    els.btnFecharTeamModal.addEventListener("click", function(){ els.teamModalBackdrop.hidden = true; });
+    els.teamModalBackdrop.addEventListener("click", function(ev){ if(ev.target===els.teamModalBackdrop) els.teamModalBackdrop.hidden = true; });
+
+    els.formNovoUsuario.addEventListener("submit", async function(ev){
+      ev.preventDefault();
+      var fd = new FormData(ev.target);
+      var nome = fd.get("nome").trim(), email = fd.get("email").trim(), senha = fd.get("senha");
+      if(!nome || !email || senha.length < 6){ toast("Preencha nome, e-mail e uma senha com 6+ caracteres."); return; }
+      try{
+        await api("add_user", {body:{nome:nome, email:email, senha:senha}});
+        ev.target.reset();
+        toast("Membro adicionado.");
+        await loadTeamList();
+        await loadSellers();
+      }catch(e){
+        console.error(e);
+        toast(e.message || "Não foi possível adicionar o membro.");
+      }
+    });
+  }
+
+  async function loadTeamList(){
+    try{
+      var users = await api("list_users");
+      els.teamList.innerHTML = '<table style="width:100%;border-collapse:collapse;font-size:.85rem;">' +
+        '<thead><tr style="text-align:left;color:var(--ash);font-size:.75rem;">' +
+        '<th style="padding:.4em 0;">Nome</th><th>E-mail</th><th>Admin</th><th></th></tr></thead><tbody>' +
+        users.map(function(u){
+          return '<tr style="border-top:1px solid var(--line);">' +
+            '<td style="padding:.5em 0;">'+esc(u.nome)+'</td>' +
+            '<td>'+esc(u.email)+'</td>' +
+            '<td>'+(u.isAdmin?"Sim":"—")+'</td>' +
+            '<td><button type="button" class="btn btn-ghost btn-sm" data-del="'+u.id+'">Remover</button></td>' +
+          '</tr>';
+        }).join("") + '</tbody></table>';
+      els.teamList.querySelectorAll("[data-del]").forEach(function(btn){
+        btn.addEventListener("click", async function(){
+          if(!confirm("Remover esta conta? A pessoa não conseguirá mais entrar no painel.")) return;
+          try{
+            await api("delete_user", {body:{id:btn.getAttribute("data-del")}});
+            await loadTeamList();
+          }catch(e){
+            console.error(e);
+            toast(e.message || "Não foi possível remover.");
+          }
+        });
+      });
+    }catch(e){
+      console.error(e);
+      els.teamList.innerHTML = '<div class="empty-state">Não foi possível carregar a equipe.</div>';
+    }
   }
 })();
 </script>
