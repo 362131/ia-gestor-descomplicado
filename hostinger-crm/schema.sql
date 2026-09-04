@@ -15,6 +15,16 @@ CREATE TABLE IF NOT EXISTS contacts (
   created_at DATETIME NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE IF NOT EXISTS sellers (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(120) NOT NULL UNIQUE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT IGNORE INTO sellers (nome) VALUES
+  ('Eduardo Mendes'),
+  ('Marcelly Lemos'),
+  ('Eduardo Carvalho');
+
 CREATE TABLE IF NOT EXISTS interactions (
   id VARCHAR(40) PRIMARY KEY,
   contact_id VARCHAR(40) NOT NULL,

@@ -282,9 +282,6 @@
       <div class="field field-req"><label>Vendedor responsável</label>
         <select required name="vendedor" id="inpVendedor">
           <option value="">Selecione...</option>
-          <option>Eduardo Mendes</option>
-          <option>Marcelly Lemos</option>
-          <option>Eduardo Carvalho</option>
         </select>
       </div>
       <div class="field">
@@ -332,7 +329,7 @@
    "firstUseBanner","dismissBanner","connError","gateScreen","appRoot","gateForm","gateToken","gateError"
   ].forEach(function(id){ els[id]=document.getElementById(id); });
 
-  var state = { contacts: [], selectedId: null, ready:false, token:"" };
+  var state = { contacts: [], sellers: [], selectedId: null, ready:false, token:"" };
 
   function uid(){ return Math.random().toString(36).slice(2,10) + Date.now().toString(36); }
   function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
@@ -434,9 +431,9 @@
 
   function boot(){
     initBanner();
-    initVendedorPrefill();
     wireStaticUI();
     loadContacts();
+    loadSellers();
   }
 
   // ---------- First-use banner ----------
@@ -450,12 +447,38 @@
     });
   }
 
-  function initVendedorPrefill(){
-    try{
-      var v = localStorage.getItem("edusia_crm_meu_nome");
-      if(v) els.inpVendedor.value = v;
-    }catch(e){}
+  function renderSellerOptions(selectEl, selected){
+    selectEl.innerHTML = '<option value="">Selecione...</option>' +
+      state.sellers.map(function(n){ return '<option'+(n===selected?' selected':'')+'>'+esc(n)+'</option>'; }).join("") +
+      '<option value="__new__">+ Adicionar novo vendedor...</option>';
   }
+
+  async function loadSellers(){
+    try{
+      state.sellers = await api("list_sellers") || [];
+    }catch(e){
+      console.error(e);
+      state.sellers = [];
+    }
+    var prefill = "";
+    try{ prefill = localStorage.getItem("edusia_crm_meu_nome") || ""; }catch(e){}
+    renderSellerOptions(els.inpVendedor, prefill);
+  }
+
+  els.inpVendedor.addEventListener("change", async function(){
+    if(els.inpVendedor.value !== "__new__") return;
+    var nome = (prompt("Nome completo do novo vendedor:") || "").trim();
+    if(!nome){ renderSellerOptions(els.inpVendedor, ""); return; }
+    try{
+      await api("add_seller", {body:{nome:nome}});
+      await loadSellers();
+      els.inpVendedor.value = nome;
+    }catch(e){
+      console.error(e);
+      toast(e.message || "Não foi possível adicionar o vendedor.");
+      renderSellerOptions(els.inpVendedor, "");
+    }
+  });
 
   // ---------- KPIs ----------
   function computeKpis(){

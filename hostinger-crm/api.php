@@ -176,6 +176,19 @@ switch ($action) {
         break;
     }
 
+    case 'list_sellers': {
+        $rows = $pdo->query('SELECT nome FROM sellers ORDER BY nome')->fetchAll();
+        echo json_encode(array_map(fn($r) => $r['nome'], $rows));
+        break;
+    }
+
+    case 'add_seller': {
+        $nome = reqStr($input['nome'] ?? null, 'nome');
+        $pdo->prepare('INSERT IGNORE INTO sellers (nome) VALUES (?)')->execute([$nome]);
+        echo json_encode(['ok' => true]);
+        break;
+    }
+
     default:
         fail(400, 'Ação desconhecida: ' . $action);
 }
