@@ -1,0 +1,843 @@
+<title>Painel Comercial EdusIA</title>
+<meta name="description" content="Mini-CRM para a equipe comercial do EdusIA Instituto: cadastro de contatos, histórico de conversas, perfil DISC e pipeline por pilar.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --violet:#5B3FE0;
+    --violet-deep:#3F2BA8;
+    --violet-soft:#EFECFC;
+    --teal:#0F9C90;
+    --paper:#F6F5FB;
+    --paper-raised:#FFFFFF;
+    --line:#E3E1F0;
+    --ink:#211D3A;
+    --ash:#6B6885;
+    --ash-soft:#918DAB;
+    --red:#D6373C;
+    --amber:#C2790A;
+    --green:#1F9254;
+    --blue:#2563C7;
+    --shadow: 0 1px 2px rgba(33,29,58,.06), 0 8px 24px -12px rgba(33,29,58,.16);
+    --radius-s:6px;
+    --radius-m:10px;
+    --radius-l:16px;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --violet:#8B7BFF;
+      --violet-deep:#B7ACFF;
+      --violet-soft:#241F45;
+      --teal:#3FD6C6;
+      --paper:#17152A;
+      --paper-raised:#211D3D;
+      --line:#37325C;
+      --ink:#EDEBFA;
+      --ash:#ABA6CC;
+      --ash-soft:#7A76A0;
+      --red:#FF6B6E;
+      --amber:#F0AB3D;
+      --green:#4ADE93;
+      --blue:#6AA5FF;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 32px -14px rgba(0,0,0,.55);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --violet:#8B7BFF;
+    --violet-deep:#B7ACFF;
+    --violet-soft:#241F45;
+    --teal:#3FD6C6;
+    --paper:#17152A;
+    --paper-raised:#211D3D;
+    --line:#37325C;
+    --ink:#EDEBFA;
+    --ash:#ABA6CC;
+    --ash-soft:#7A76A0;
+    --red:#FF6B6E;
+    --amber:#F0AB3D;
+    --green:#4ADE93;
+    --blue:#6AA5FF;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 32px -14px rgba(0,0,0,.55);
+    color-scheme: dark;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"IBM Plex Sans", system-ui, sans-serif;
+    font-size:14px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background: var(--violet-soft); }
+  h1,h2,h3{ font-family:"Fraunces", Georgia, serif; text-wrap:balance; margin:0; }
+  button, input, select, textarea{ font-family:inherit; font-size:inherit; color:inherit; }
+  input, select, textarea{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:var(--radius-s);
+    padding:.55em .7em;
+    width:100%;
+  }
+  input:focus, select:focus, textarea:focus, button:focus-visible{
+    outline:2px solid var(--violet);
+    outline-offset:1px;
+  }
+  label{ font-size:.78rem; font-weight:600; color:var(--ash); display:block; margin-bottom:.3em; }
+  .field{ margin-bottom:.9em; }
+  .field-req label::after{ content:" *"; color:var(--red); }
+  .row2{ display:grid; grid-template-columns:1fr 1fr; gap:.8em; }
+  .tabular{ font-family:"IBM Plex Mono", monospace; font-variant-numeric:tabular-nums; }
+
+  button.btn{
+    border:none; cursor:pointer; border-radius:var(--radius-s);
+    padding:.6em 1.1em; font-weight:600; white-space:nowrap;
+    transition:transform .08s ease, opacity .12s ease;
+  }
+  button.btn:active{ transform:translateY(1px); }
+  .btn-primary{ background:var(--violet); color:#fff; }
+  .btn-primary:hover{ background:var(--violet-deep); }
+  .btn-ghost{ background:transparent; border:1px solid var(--line); color:var(--ink); }
+  .btn-ghost:hover{ background:var(--violet-soft); }
+  .btn-sm{ padding:.4em .8em; font-size:.82rem; }
+
+  .wrap{ max-width:1400px; margin:0 auto; padding:1.4rem 1.6rem 3rem; }
+
+  /* header */
+  header.top{
+    display:flex; align-items:center; justify-content:space-between; gap:1rem;
+    padding-bottom:1.1rem; border-bottom:1px solid var(--line); margin-bottom:1.2rem;
+    flex-wrap:wrap;
+  }
+  .brand{ display:flex; align-items:baseline; gap:.6rem; }
+  .brand h1{ font-size:1.5rem; font-weight:700; color:var(--ink); }
+  .brand .mark{ color:var(--violet); }
+  .brand small{ color:var(--ash); font-size:.8rem; }
+  .pillars{ display:flex; gap:.4rem; flex-wrap:wrap; }
+  .pillar-chip{
+    font-size:.72rem; font-weight:600; padding:.3em .7em; border-radius:99px;
+    background:var(--violet-soft); color:var(--violet-deep); letter-spacing:.02em;
+  }
+
+  .banner{
+    display:flex; gap:.7rem; align-items:flex-start;
+    background:var(--violet-soft); border:1px solid var(--line);
+    border-radius:var(--radius-m); padding:.85em 1em; margin-bottom:1.1rem;
+    font-size:.85rem; color:var(--ink);
+  }
+  .banner button{ margin-left:auto; background:none; border:none; cursor:pointer; color:var(--ash); font-size:1rem; line-height:1; }
+
+  /* KPIs */
+  .kpi-grid{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr));
+    gap:.9rem; margin-bottom:1.3rem;
+  }
+  .kpi{
+    background:var(--paper-raised); border:1px solid var(--line); border-radius:var(--radius-m);
+    padding:1rem 1.1rem; box-shadow:var(--shadow);
+  }
+  .kpi .label{ font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--ash); font-weight:600; }
+  .kpi .value{ font-family:"IBM Plex Mono", monospace; font-size:1.7rem; font-weight:600; margin-top:.25em; font-variant-numeric:tabular-nums; }
+  .kpi .value.warn{ color:var(--red); }
+  .kpi .sub{ font-size:.74rem; color:var(--ash-soft); margin-top:.2em; }
+  .kpi.vendedores .value{ font-size:1rem; }
+  .vend-bar-row{ display:flex; align-items:center; gap:.5em; margin-top:.35em; font-size:.76rem; }
+  .vend-bar-row .name{ width:5.2em; flex:none; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--ash); }
+  .vend-bar-row .bar{ height:6px; background:var(--violet); border-radius:3px; flex:none; }
+  .vend-bar-row .n{ color:var(--ash-soft); }
+
+  /* toolbar */
+  .toolbar{
+    display:flex; gap:.6rem; flex-wrap:wrap; align-items:center; margin-bottom:1.1rem;
+  }
+  .toolbar input[type=search]{ max-width:220px; }
+  .toolbar select{ max-width:150px; }
+  .toolbar .spacer{ flex:1; }
+
+  /* layout */
+  .board{ display:grid; grid-template-columns:minmax(300px,380px) 1fr; gap:1.2rem; align-items:start; }
+  @media (max-width:880px){ .board{ grid-template-columns:1fr; } }
+
+  .list-panel{
+    background:var(--paper-raised); border:1px solid var(--line); border-radius:var(--radius-l);
+    box-shadow:var(--shadow); max-height:78vh; overflow-y:auto; padding:.6rem;
+  }
+  .list-panel .count{ font-size:.76rem; color:var(--ash); padding:.3em .5em .6em; }
+  .contact-card{
+    position:relative; padding:.7em .8em .7em 1em; border-radius:var(--radius-m);
+    cursor:pointer; margin-bottom:.4em; border:1px solid transparent;
+  }
+  .contact-card:hover{ background:var(--violet-soft); }
+  .contact-card.active{ background:var(--violet-soft); border-color:var(--violet); }
+  .contact-card .discbar{
+    position:absolute; left:0; top:.5em; bottom:.5em; width:4px; border-radius:2px;
+  }
+  .contact-card .name{ font-weight:600; }
+  .contact-card .meta{ font-size:.78rem; color:var(--ash); margin-top:.15em; }
+  .contact-card .tags-row{ display:flex; gap:1em; align-items:center; margin-top:.4em; font-size:.74rem; }
+  .badge{ display:inline-flex; align-items:center; gap:.35em; padding:.2em .55em; border-radius:99px; font-weight:600; font-size:.72rem; }
+  .badge-dot{ width:.55em; height:.55em; border-radius:50%; flex:none; }
+  .stage-prospeccao{ background:var(--line); color:var(--ash); }
+  .stage-proposta{ background:#FDECC8; color:#8A5A00; }
+  .stage-negociacao{ background:var(--violet-soft); color:var(--violet-deep); }
+  .stage-ganho{ background:#DCF3E4; color:var(--green); }
+  .stage-perdido{ background:#FBE1E1; color:var(--red); }
+  :root[data-theme="dark"] .stage-proposta, @media (prefers-color-scheme:dark){ }
+  .late-flag{ color:var(--red); font-weight:700; font-size:.72rem; display:inline-flex; align-items:center; gap:.25em; }
+  .empty-state{ text-align:center; padding:2.5em 1em; color:var(--ash); }
+
+  .detail-panel{
+    background:var(--paper-raised); border:1px solid var(--line); border-radius:var(--radius-l);
+    box-shadow:var(--shadow); padding:1.3rem 1.4rem; min-height:78vh;
+  }
+  .detail-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:1rem; flex-wrap:wrap; margin-bottom:.4rem; }
+  .detail-head h2{ font-size:1.35rem; }
+  .detail-sub{ color:var(--ash); font-size:.85rem; margin-top:.2em; }
+  .kv-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:.8rem 1rem; margin:1rem 0; }
+  .kv .k{ font-size:.7rem; text-transform:uppercase; letter-spacing:.05em; color:var(--ash-soft); font-weight:600; }
+  .kv .v{ margin-top:.15em; }
+  .tag-chip{ background:var(--violet-soft); color:var(--violet-deep); padding:.15em .6em; border-radius:99px; font-size:.74rem; font-weight:600; }
+  .tags-editor{ display:flex; flex-wrap:wrap; gap:.4em; align-items:center; margin-top:.3em; }
+  .tags-editor .rm{ cursor:pointer; margin-left:.3em; opacity:.6; }
+  .tags-editor input{ width:auto; flex:1; min-width:100px; border:none; background:transparent; padding:.15em; }
+
+  .section-title{ font-size:1rem; font-weight:700; margin:1.4rem 0 .6rem; display:flex; align-items:center; gap:.5em; }
+  .section-title .n{ color:var(--ash-soft); font-weight:500; font-size:.82rem; }
+
+  .timeline{ display:flex; flex-direction:column; gap:.8em; max-height:340px; overflow-y:auto; padding-right:.3em; }
+  .tl-item{ border:1px solid var(--line); border-radius:var(--radius-m); padding:.75em .9em; }
+  .tl-head{ display:flex; justify-content:space-between; gap:.6em; flex-wrap:wrap; align-items:center; }
+  .tl-head .when{ font-family:"IBM Plex Mono",monospace; font-size:.78rem; color:var(--ash); }
+  .tl-resumo{ margin-top:.4em; white-space:pre-wrap; }
+  .tl-foot{ margin-top:.5em; display:flex; gap:.6em; flex-wrap:wrap; font-size:.78rem; color:var(--ash); }
+
+  .new-int-form{ border:1px dashed var(--line); border-radius:var(--radius-m); padding:1em; margin-top:.6em; }
+  .form-actions{ display:flex; gap:.6em; justify-content:flex-end; margin-top:.5em; }
+
+  .picker-empty{ color:var(--ash); text-align:center; padding:4em 1em; }
+
+  /* modal */
+  .modal-backdrop{
+    position:fixed; inset:0; background:rgba(20,17,40,.45); display:flex;
+    align-items:flex-start; justify-content:center; padding:4vh 1rem; z-index:50; overflow-y:auto;
+  }
+  .modal{
+    background:var(--paper-raised); border-radius:var(--radius-l); box-shadow:var(--shadow);
+    width:min(560px,100%); padding:1.4rem 1.5rem; border:1px solid var(--line);
+  }
+  .modal h3{ font-size:1.2rem; margin-bottom:.9rem; }
+  [hidden]{ display:none !important; }
+
+  .disc-pick{ display:flex; gap:.4em; }
+  .disc-pick button{
+    flex:1; border:1px solid var(--line); background:var(--paper-raised); border-radius:var(--radius-s);
+    padding:.5em 0; cursor:pointer; font-weight:700;
+  }
+  .disc-pick button.sel-D{ background:var(--red); color:#fff; border-color:var(--red); }
+  .disc-pick button.sel-I{ background:var(--amber); color:#fff; border-color:var(--amber); }
+  .disc-pick button.sel-S{ background:var(--green); color:#fff; border-color:var(--green); }
+  .disc-pick button.sel-C{ background:var(--blue); color:#fff; border-color:var(--blue); }
+
+  .toast{
+    position:fixed; bottom:1.2rem; right:1.2rem; background:var(--ink); color:var(--paper);
+    padding:.7em 1.1em; border-radius:var(--radius-s); box-shadow:var(--shadow); font-size:.85rem; z-index:80;
+  }
+  :root[data-theme="dark"] .toast, @media(prefers-color-scheme:dark){ .toast{ } }
+
+  .footer-note{ text-align:center; color:var(--ash-soft); font-size:.75rem; margin-top:2rem; }
+  a.linklike{ color:var(--teal); font-weight:600; cursor:pointer; }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <h1><span class="mark">Edus</span>IA <span style="font-weight:400;">· Painel Comercial</span></h1>
+      <small>Formação · Consultoria · Labs · Studio · Eventos</small>
+    </div>
+    <div class="pillars">
+      <span class="pillar-chip">Formação</span>
+      <span class="pillar-chip">Consultoria</span>
+      <span class="pillar-chip">Labs</span>
+      <span class="pillar-chip">Studio</span>
+      <span class="pillar-chip">Eventos</span>
+    </div>
+  </header>
+
+  <div class="banner" id="firstUseBanner" hidden>
+    <span>📋</span>
+    <div>
+      <strong>Dados compartilhados com toda a equipe.</strong>
+      Cada contato, conversa e proposta cadastrados aqui ficam visíveis para todos os vendedores e para a gestão comercial — não é uma área pessoal.
+    </div>
+    <button id="dismissBanner" title="Fechar aviso">✕</button>
+  </div>
+
+  <section class="kpi-grid" id="kpiGrid"></section>
+
+  <div class="toolbar">
+    <input type="search" id="fSearch" placeholder="Buscar por nome, empresa, e-mail...">
+    <select id="fVendedor"><option value="">Vendedor (todos)</option></select>
+    <select id="fEstagio">
+      <option value="">Estágio (todos)</option>
+      <option value="prospeccao">Prospecção</option>
+      <option value="proposta">Proposta enviada</option>
+      <option value="negociacao">Em negociação</option>
+      <option value="ganho">Fechado — ganho</option>
+      <option value="perdido">Fechado — perdido</option>
+    </select>
+    <select id="fPilar">
+      <option value="">Pilar (todos)</option>
+      <option>Formação</option><option>Consultoria</option><option>Labs</option><option>Studio</option><option>Eventos</option>
+    </select>
+    <select id="fTemp">
+      <option value="">Temperatura (todas)</option>
+      <option value="quente">Quente</option><option value="morno">Morno</option><option value="frio">Frio</option>
+    </select>
+    <select id="fPeriodo">
+      <option value="">Período (todo)</option>
+      <option value="7">Últimos 7 dias</option>
+      <option value="30">Últimos 30 dias</option>
+      <option value="90">Últimos 90 dias</option>
+    </select>
+    <span class="spacer"></span>
+    <button class="btn btn-ghost btn-sm" id="btnExport">⭳ Exportar CSV</button>
+    <button class="btn btn-primary" id="btnNovoContato">+ Novo contato</button>
+  </div>
+
+  <div class="board">
+    <div class="list-panel">
+      <div class="count" id="listCount">carregando...</div>
+      <div id="listBody"></div>
+    </div>
+    <div class="detail-panel" id="detailPanel">
+      <div class="picker-empty">Selecione um contato à esquerda, ou cadastre o primeiro contato para começar.</div>
+    </div>
+  </div>
+
+  <p class="footer-note">EdusIA Instituto · Painel Comercial interno · registros visíveis para toda a equipe de vendas</p>
+</div>
+
+<div class="modal-backdrop" id="modalBackdrop" hidden>
+  <div class="modal">
+    <h3>Novo contato</h3>
+    <form id="formContato">
+      <div class="row2">
+        <div class="field field-req"><label>Nome completo</label><input required name="nome"></div>
+        <div class="field"><label>Empresa</label><input name="empresa"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Cargo</label><input name="cargo"></div>
+        <div class="field field-req"><label>Telefone / WhatsApp</label><input required name="telefone" placeholder="(00) 00000-0000"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>E-mail</label><input type="email" name="email"></div>
+        <div class="field field-req">
+          <label>Origem do lead</label>
+          <select required name="origem">
+            <option value="">Selecione...</option>
+            <option>Indicação</option><option>Evento</option><option>Instagram</option><option>Site</option><option>Outro</option>
+          </select>
+        </div>
+      </div>
+      <div class="field field-req"><label>Vendedor responsável</label><input required name="vendedor" id="inpVendedor"></div>
+      <div class="field">
+        <label>Perfil DISC identificado (opcional)</label>
+        <div class="disc-pick" id="discPick" data-value="">
+          <button type="button" data-l="D">D</button>
+          <button type="button" data-l="I">I</button>
+          <button type="button" data-l="S">S</button>
+          <button type="button" data-l="C">C</button>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-ghost" id="btnCancelModal">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Salvar contato</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var STAGES = {
+    prospeccao:{label:"Prospecção", cls:"stage-prospeccao"},
+    proposta:{label:"Proposta enviada", cls:"stage-proposta"},
+    negociacao:{label:"Em negociação", cls:"stage-negociacao"},
+    ganho:{label:"Fechado — ganho", cls:"stage-ganho"},
+    perdido:{label:"Fechado — perdido", cls:"stage-perdido"}
+  };
+  var TEMPS = {
+    quente:{label:"Quente", color:"var(--red)"},
+    morno:{label:"Morno", color:"var(--amber)"},
+    frio:{label:"Frio", color:"var(--blue)"}
+  };
+  var DISC_COLOR = {D:"var(--red)", I:"var(--amber)", S:"var(--green)", C:"var(--blue)"};
+  var PILARES = ["Formação","Consultoria","Labs","Studio","Eventos"];
+  var CANAIS = ["WhatsApp","Telefone","Presencial","E-mail","Videochamada"];
+
+  var els = {};
+  ["kpiGrid","listBody","listCount","detailPanel","fSearch","fVendedor","fEstagio","fPilar","fTemp","fPeriodo",
+   "modalBackdrop","formContato","btnNovoContato","btnCancelModal","discPick","inpVendedor","btnExport",
+   "firstUseBanner","dismissBanner"].forEach(function(id){ els[id]=document.getElementById(id); });
+
+  var state = { contacts: [], selectedId: null, db: null, ready:false };
+
+  function uid(){ return Math.random().toString(36).slice(2,10) + Date.now().toString(36); }
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
+  function fmtMoney(n){ n=Number(n)||0; return "R$ " + n.toLocaleString("pt-BR",{minimumFractionDigits:2, maximumFractionDigits:2}); }
+  function fmtDate(iso){ if(!iso) return "—"; var d=new Date(iso); if(isNaN(d)) return iso; return d.toLocaleDateString("pt-BR"); }
+  function fmtDateTime(iso){ if(!iso) return "—"; var d=new Date(iso); if(isNaN(d)) return iso; return d.toLocaleDateString("pt-BR")+" "+d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}); }
+  function todayISO(){ return new Date().toISOString().slice(0,10); }
+
+  function lastInteraction(c){
+    var ints = c.interactions || [];
+    if(!ints.length) return null;
+    return ints.slice().sort(function(a,b){ return new Date(b.dataHora||b.createdAt) - new Date(a.dataHora||a.createdAt); })[0];
+  }
+  function isLate(c){
+    var li = lastInteraction(c);
+    if(!li || !li.dataFollowUp) return false;
+    if(li.estagio==="ganho" || li.estagio==="perdido") return false;
+    return li.dataFollowUp < todayISO();
+  }
+
+  // ---------- Toast ----------
+  function toast(msg){
+    var t=document.createElement("div"); t.className="toast"; t.textContent=msg;
+    document.body.appendChild(t); setTimeout(function(){ t.remove(); }, 3200);
+  }
+
+  // ---------- Storage ----------
+  function loadLocalFallback(){
+    try{ return JSON.parse(localStorage.getItem("edusia_crm_fallback")||"[]"); }catch(e){ return []; }
+  }
+  function saveLocalFallback(list){
+    try{ localStorage.setItem("edusia_crm_fallback", JSON.stringify(list)); }catch(e){}
+  }
+
+  async function initDb(){
+    try{
+      if(window.claude && window.claude.use){
+        state.db = await window.claude.use("db");
+      }
+    }catch(e){ state.db = null; }
+
+    if(state.db){
+      try{
+        state.db.collection("contacts").onSnapshot(function(snap){
+          state.contacts = snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
+          state.ready = true;
+          renderAll();
+        }, function(err){
+          console.error("db onSnapshot error", err);
+          toast("Falha ao sincronizar com o armazenamento compartilhado — exibindo cópia local.");
+          state.contacts = loadLocalFallback();
+          state.ready = true;
+          renderAll();
+        });
+      }catch(e){
+        console.error(e);
+        state.contacts = loadLocalFallback();
+        state.ready = true;
+        renderAll();
+      }
+    } else {
+      state.contacts = loadLocalFallback();
+      state.ready = true;
+      renderAll();
+      toast("Armazenamento compartilhado indisponível nesta visualização — usando cópia local deste navegador.");
+    }
+  }
+
+  async function persistContact(id, data){
+    try{
+      if(state.db){
+        await state.db.collection("contacts").doc(id).set(data);
+      } else {
+        var list = loadLocalFallback();
+        var idx = list.findIndex(function(x){ return x.id===id; });
+        var full = Object.assign({id:id}, data);
+        if(idx>=0) list[idx]=full; else list.push(full);
+        saveLocalFallback(list);
+        state.contacts = list;
+        renderAll();
+      }
+    }catch(e){
+      console.error("persist error", e);
+      toast("Não foi possível salvar. Tente novamente.");
+    }
+  }
+
+  // ---------- First-use banner ----------
+  (function initBanner(){
+    var seen = false;
+    try{ seen = localStorage.getItem("edusia_crm_banner_seen")==="1"; }catch(e){}
+    if(!seen){ els.firstUseBanner.hidden = false; }
+    els.dismissBanner.addEventListener("click", function(){
+      els.firstUseBanner.hidden = true;
+      try{ localStorage.setItem("edusia_crm_banner_seen","1"); }catch(e){}
+    });
+  })();
+
+  // ---------- Vendedor prefill ----------
+  (function initVendedorPrefill(){
+    try{
+      var v = localStorage.getItem("edusia_crm_meu_nome");
+      if(v) els.inpVendedor.value = v;
+    }catch(e){}
+  })();
+
+  // ---------- KPIs ----------
+  function computeKpis(){
+    var total = state.contacts.length;
+    var ganhos = 0, pipeline = 0, atrasados = 0;
+    var byVendedor = {};
+
+    state.contacts.forEach(function(c){
+      var vend = c.vendedor || "—";
+      byVendedor[vend] = (byVendedor[vend]||0)+1;
+      var li = lastInteraction(c);
+      if(li){
+        if(li.estagio==="ganho") ganhos++;
+        if(li.estagio!=="ganho" && li.estagio!=="perdido"){ pipeline += Number(li.valor)||0; }
+      }
+      if(isLate(c)) atrasados++;
+    });
+
+    var conv = total ? (ganhos/total*100) : 0;
+    var vendList = Object.keys(byVendedor).map(function(k){ return {name:k, n:byVendedor[k]}; })
+      .sort(function(a,b){ return b.n-a.n; });
+    var maxN = vendList.length ? vendList[0].n : 1;
+
+    els.kpiGrid.innerHTML =
+      '<div class="kpi"><div class="label">Total de leads</div><div class="value">'+total+'</div><div class="sub">contatos cadastrados</div></div>' +
+      '<div class="kpi"><div class="label">Taxa de conversão</div><div class="value">'+conv.toFixed(1)+'%</div><div class="sub">'+ganhos+' fechado(s)-ganho de '+total+'</div></div>' +
+      '<div class="kpi"><div class="label">Pipeline em aberto</div><div class="value">'+fmtMoney(pipeline)+'</div><div class="sub">propostas ativas</div></div>' +
+      '<div class="kpi"><div class="label">Follow-ups atrasados</div><div class="value '+(atrasados?"warn":"")+'">'+atrasados+'</div><div class="sub">ação vencida</div></div>' +
+      '<div class="kpi vendedores"><div class="label">Leads por vendedor</div>' +
+        vendList.slice(0,4).map(function(v){
+          return '<div class="vend-bar-row"><span class="name" title="'+esc(v.name)+'">'+esc(v.name)+'</span><span class="bar" style="width:'+Math.max(6,(v.n/maxN*70))+'px"></span><span class="n">'+v.n+'</span></div>';
+        }).join("") +
+      '</div>';
+
+    // populate vendedor filter
+    var cur = els.fVendedor.value;
+    els.fVendedor.innerHTML = '<option value="">Vendedor (todos)</option>' +
+      vendList.map(function(v){ return '<option value="'+esc(v.name)+'">'+esc(v.name)+'</option>'; }).join("");
+    els.fVendedor.value = cur;
+  }
+
+  // ---------- Filtering ----------
+  function getFiltered(){
+    var q = els.fSearch.value.trim().toLowerCase();
+    var fVend = els.fVendedor.value, fEst = els.fEstagio.value, fPil = els.fPilar.value,
+        fTemp = els.fTemp.value, fPer = els.fPeriodo.value;
+    var cutoff = fPer ? (Date.now() - Number(fPer)*86400000) : null;
+
+    return state.contacts.filter(function(c){
+      var li = lastInteraction(c);
+      if(q){
+        var hay = [c.nome,c.empresa,c.email,c.telefone].join(" ").toLowerCase();
+        if(hay.indexOf(q)===-1) return false;
+      }
+      if(fVend && c.vendedor!==fVend) return false;
+      if(fEst && (!li || li.estagio!==fEst)) return false;
+      if(fPil && (!li || li.pilar!==fPil)) return false;
+      if(fTemp && (!li || li.temperatura!==fTemp)) return false;
+      if(cutoff){
+        var refDate = li ? new Date(li.dataHora||li.createdAt) : new Date(c.createdAt);
+        if(refDate.getTime() < cutoff) return false;
+      }
+      return true;
+    }).sort(function(a,b){
+      var da = a.interactions && a.interactions.length ? new Date(lastInteraction(a).dataHora||lastInteraction(a).createdAt) : new Date(a.createdAt||0);
+      var db = b.interactions && b.interactions.length ? new Date(lastInteraction(b).dataHora||lastInteraction(b).createdAt) : new Date(b.createdAt||0);
+      return db - da;
+    });
+  }
+
+  // ---------- List ----------
+  function renderList(){
+    var list = getFiltered();
+    els.listCount.textContent = list.length + (list.length===1 ? " contato" : " contatos");
+    if(!list.length){
+      els.listBody.innerHTML = '<div class="empty-state">Nenhum contato encontrado com os filtros atuais.</div>';
+      return;
+    }
+    els.listBody.innerHTML = list.map(function(c){
+      var li = lastInteraction(c);
+      var stage = li && STAGES[li.estagio];
+      var discFirst = (c.disc||"").trim().charAt(0).toUpperCase();
+      var discColor = DISC_COLOR[discFirst] || "var(--line)";
+      var late = isLate(c);
+      return '<div class="contact-card '+(c.id===state.selectedId?"active":"")+'" data-id="'+esc(c.id)+'">' +
+        '<div class="discbar" style="background:'+discColor+'"></div>' +
+        '<div class="name">'+esc(c.nome)+'</div>' +
+        '<div class="meta">'+esc(c.empresa||"—")+(c.cargo?" · "+esc(c.cargo):"")+'</div>' +
+        '<div class="tags-row">' +
+          (stage ? '<span class="badge '+stage.cls+'">'+stage.label+'</span>' : '<span class="badge stage-prospeccao">Sem registro</span>') +
+          (li ? '<span class="badge-dot" style="background:'+TEMPS[li.temperatura].color+'"></span>' : '') +
+          (late ? '<span class="late-flag">⚠ atrasado</span>' : '') +
+        '</div>' +
+      '</div>';
+    }).join("");
+
+    Array.prototype.forEach.call(els.listBody.querySelectorAll(".contact-card"), function(card){
+      card.addEventListener("click", function(){
+        state.selectedId = card.getAttribute("data-id");
+        renderAll();
+      });
+    });
+  }
+
+  // ---------- Detail ----------
+  function renderDetail(){
+    var c = state.contacts.find(function(x){ return x.id===state.selectedId; });
+    if(!c){
+      els.detailPanel.innerHTML = '<div class="picker-empty">Selecione um contato à esquerda, ou cadastre o primeiro contato para começar.</div>';
+      return;
+    }
+    var ints = (c.interactions||[]).slice().sort(function(a,b){ return new Date(b.dataHora||b.createdAt) - new Date(a.dataHora||a.createdAt); });
+    var discFull = c.disc || "";
+
+    var html = '';
+    html += '<div class="detail-head"><div><h2>'+esc(c.nome)+'</h2>' +
+      '<div class="detail-sub">'+esc(c.empresa||"Sem empresa")+(c.cargo?" · "+esc(c.cargo):"")+'</div></div>' +
+      '<button class="btn btn-ghost btn-sm" id="btnDeleteContact">Remover contato</button></div>';
+
+    html += '<div class="kv-grid">' +
+      kv("Telefone / WhatsApp", esc(c.telefone||"—")) +
+      kv("E-mail", esc(c.email||"—")) +
+      kv("Origem do lead", esc(c.origem||"—")) +
+      kv("Vendedor responsável", esc(c.vendedor||"—")) +
+      kv("Perfil DISC", discFull ? '<span class="badge" style="background:'+ (DISC_COLOR[discFull.charAt(0)]||"var(--line)") +';color:#fff">'+esc(discFull)+'</span>' : "não identificado") +
+      kv("Cadastrado em", fmtDate(c.createdAt)) +
+    '</div>';
+
+    html += '<div class="kv"><div class="k">Tags</div><div class="tags-editor" id="tagsEditor">' +
+      (c.tags||[]).map(function(t,i){ return '<span class="tag-chip">'+esc(t)+' <span class="rm" data-i="'+i+'">✕</span></span>'; }).join("") +
+      '<input placeholder="+ tag e Enter" id="newTagInput"></div></div>';
+
+    html += '<div class="section-title">Histórico de interações <span class="n">('+ints.length+')</span></div>';
+    if(ints.length){
+      html += '<div class="timeline">' + ints.map(function(it){
+        var stage = STAGES[it.estagio];
+        return '<div class="tl-item">' +
+          '<div class="tl-head">' +
+            '<span class="when tabular">'+fmtDateTime(it.dataHora)+' · '+esc(it.canal)+'</span>' +
+            '<span class="badge" style="background:'+TEMPS[it.temperatura].color+';color:#fff">'+TEMPS[it.temperatura].label+'</span>' +
+            (stage ? '<span class="badge '+stage.cls+'">'+stage.label+'</span>' : '') +
+          '</div>' +
+          '<div class="tl-resumo">'+esc(it.resumo)+'</div>' +
+          '<div class="tl-foot">' +
+            '<span>🏷 '+esc(it.pilar)+' · '+esc(it.produto)+'</span>' +
+            (it.valor ? '<span class="tabular">'+fmtMoney(it.valor)+'</span>' : '') +
+            (it.proximaAcao ? '<span>Próxima ação: '+esc(it.proximaAcao)+(it.dataFollowUp?' até '+fmtDate(it.dataFollowUp):'')+'</span>' : '') +
+          '</div>' +
+        '</div>';
+      }).join("") + '</div>';
+    } else {
+      html += '<div class="empty-state" style="padding:1.2em;">Nenhuma conversa registrada ainda.</div>';
+    }
+
+    html += '<div class="section-title">Registrar nova conversa</div>';
+    html += '<form class="new-int-form" id="formInteracao">' +
+      '<div class="row2">' +
+        '<div class="field field-req"><label>Data e hora do contato</label><input required type="datetime-local" name="dataHora"></div>' +
+        '<div class="field field-req"><label>Canal</label><select required name="canal"><option value="">Selecione...</option>' + CANAIS.map(function(x){return '<option>'+x+'</option>';}).join("") + '</select></div>' +
+      '</div>' +
+      '<div class="field field-req"><label>Resumo da conversa</label><textarea required name="resumo" rows="3" placeholder="O que foi conversado..."></textarea></div>' +
+      '<div class="row2">' +
+        '<div class="field field-req"><label>Temperatura do lead</label><select required name="temperatura"><option value="">Selecione...</option><option value="quente">Quente</option><option value="morno">Morno</option><option value="frio">Frio</option></select></div>' +
+        '<div class="field"><label>Próxima ação combinada</label><input name="proximaAcao" placeholder="ex: enviar proposta"></div>' +
+      '</div>' +
+      '<div class="field"><label>Data de follow-up</label><input type="date" name="dataFollowUp"></div>' +
+      '<div class="section-title" style="margin-top:1rem;font-size:.9rem;">Produto / serviço oferecido</div>' +
+      '<div class="row2">' +
+        '<div class="field field-req"><label>Pilar</label><select required name="pilar"><option value="">Selecione...</option>' + PILARES.map(function(x){return '<option>'+x+'</option>';}).join("") + '</select></div>' +
+        '<div class="field field-req"><label>Nome do produto/serviço</label><input required name="produto"></div>' +
+      '</div>' +
+      '<div class="row2">' +
+        '<div class="field"><label>Valor da proposta (R$)</label><input type="number" step="0.01" min="0" name="valor"></div>' +
+        '<div class="field field-req"><label>Estágio da negociação</label><select required name="estagio">' +
+          Object.keys(STAGES).map(function(k){ return '<option value="'+k+'">'+STAGES[k].label+'</option>'; }).join("") +
+        '</select></div>' +
+      '</div>' +
+      '<div class="form-actions"><button type="submit" class="btn btn-primary btn-sm">Registrar conversa</button></div>' +
+    '</form>';
+
+    els.detailPanel.innerHTML = html;
+
+    document.getElementById("btnDeleteContact").addEventListener("click", function(){
+      if(confirm("Remover \""+c.nome+"\" e todo o histórico? Esta ação não pode ser desfeita.")){
+        deleteContact(c.id);
+      }
+    });
+
+    document.getElementById("formInteracao").addEventListener("submit", function(ev){
+      ev.preventDefault();
+      var fd = new FormData(ev.target);
+      var novo = {
+        id: uid(),
+        dataHora: fd.get("dataHora") ? new Date(fd.get("dataHora")).toISOString() : new Date().toISOString(),
+        canal: fd.get("canal"),
+        resumo: fd.get("resumo"),
+        temperatura: fd.get("temperatura"),
+        proximaAcao: fd.get("proximaAcao")||"",
+        dataFollowUp: fd.get("dataFollowUp")||"",
+        pilar: fd.get("pilar"),
+        produto: fd.get("produto"),
+        valor: fd.get("valor")||0,
+        estagio: fd.get("estagio"),
+        vendedorRegistro: c.vendedor,
+        createdAt: new Date().toISOString()
+      };
+      var updated = Object.assign({}, c, { interactions: (c.interactions||[]).concat([novo]) });
+      persistContact(c.id, stripId(updated));
+      toast("Conversa registrada.");
+    });
+
+    var tagsEditor = document.getElementById("tagsEditor");
+    tagsEditor.querySelectorAll(".rm").forEach(function(x){
+      x.addEventListener("click", function(){
+        var i = Number(x.getAttribute("data-i"));
+        var tags = (c.tags||[]).slice(); tags.splice(i,1);
+        persistContact(c.id, stripId(Object.assign({}, c, {tags:tags})));
+      });
+    });
+    var newTagInput = document.getElementById("newTagInput");
+    newTagInput.addEventListener("keydown", function(ev){
+      if(ev.key==="Enter"){
+        ev.preventDefault();
+        var v = newTagInput.value.trim();
+        if(v){
+          var tags = (c.tags||[]).concat([v]);
+          persistContact(c.id, stripId(Object.assign({}, c, {tags:tags})));
+        }
+      }
+    });
+  }
+
+  function kv(k,v){ return '<div class="kv"><div class="k">'+k+'</div><div class="v">'+v+'</div></div>'; }
+  function stripId(obj){ var o=Object.assign({},obj); delete o.id; return o; }
+
+  async function deleteContact(id){
+    try{
+      if(state.db){
+        await state.db.collection("contacts").doc(id).delete();
+      } else {
+        var list = loadLocalFallback().filter(function(x){ return x.id!==id; });
+        saveLocalFallback(list);
+        state.contacts = list;
+      }
+      if(state.selectedId===id) state.selectedId=null;
+      renderAll();
+      toast("Contato removido.");
+    }catch(e){
+      console.error(e);
+      toast("Não foi possível remover o contato.");
+    }
+  }
+
+  function renderAll(){
+    if(!state.ready) return;
+    computeKpis();
+    renderList();
+    renderDetail();
+  }
+
+  // ---------- filters wiring ----------
+  ["fSearch","fVendedor","fEstagio","fPilar","fTemp","fPeriodo"].forEach(function(id){
+    els[id].addEventListener("input", renderList);
+    els[id].addEventListener("change", renderList);
+  });
+
+  // ---------- modal: novo contato ----------
+  els.btnNovoContato.addEventListener("click", function(){ els.modalBackdrop.hidden=false; });
+  els.btnCancelModal.addEventListener("click", function(){ els.modalBackdrop.hidden=true; });
+  els.modalBackdrop.addEventListener("click", function(ev){ if(ev.target===els.modalBackdrop) els.modalBackdrop.hidden=true; });
+
+  els.discPick.querySelectorAll("button").forEach(function(b){
+    b.addEventListener("click", function(){
+      var cur = els.discPick.getAttribute("data-value")||"";
+      var l = b.getAttribute("data-l");
+      var has = cur.indexOf(l)!==-1;
+      var next = has ? cur.replace(l,"") : cur+l;
+      els.discPick.setAttribute("data-value", next);
+      els.discPick.querySelectorAll("button").forEach(function(x){
+        x.classList.toggle("sel-"+x.getAttribute("data-l"), next.indexOf(x.getAttribute("data-l"))!==-1);
+      });
+    });
+  });
+
+  els.formContato.addEventListener("submit", function(ev){
+    ev.preventDefault();
+    var fd = new FormData(ev.target);
+    var nome = fd.get("nome").trim(), telefone = fd.get("telefone").trim(), origem = fd.get("origem"), vendedor = fd.get("vendedor").trim();
+    if(!nome || !telefone || !origem || !vendedor){ toast("Preencha os campos obrigatórios."); return; }
+    try{ localStorage.setItem("edusia_crm_meu_nome", vendedor); }catch(e){}
+
+    var id = uid();
+    var contato = {
+      nome: nome, empresa: fd.get("empresa")||"", cargo: fd.get("cargo")||"",
+      telefone: telefone, email: fd.get("email")||"", origem: origem,
+      disc: els.discPick.getAttribute("data-value")||"", vendedor: vendedor,
+      tags: [], interactions: [], createdAt: new Date().toISOString()
+    };
+    persistContact(id, contato);
+    state.selectedId = id;
+    ev.target.reset();
+    els.discPick.setAttribute("data-value","");
+    els.discPick.querySelectorAll("button").forEach(function(x){ x.className=""; });
+    els.inpVendedor.value = vendedor;
+    els.modalBackdrop.hidden = true;
+    toast("Contato cadastrado.");
+  });
+
+  // ---------- CSV export ----------
+  els.btnExport.addEventListener("click", async function(){
+    var headers = ["nome","empresa","cargo","telefone","email","origem","disc","vendedor_responsavel","tags","cadastrado_em",
+      "data_conversa","canal","resumo","temperatura","proxima_acao","data_followup","pilar","produto","valor_proposta","estagio","vendedor_registro"];
+    var rows = [headers];
+    state.contacts.forEach(function(c){
+      var base = [c.nome,c.empresa,c.cargo,c.telefone,c.email,c.origem,c.disc,c.vendedor,(c.tags||[]).join("|"),fmtDate(c.createdAt)];
+      var ints = c.interactions||[];
+      if(!ints.length){
+        rows.push(base.concat(["","","","","","","","","",""]));
+      } else {
+        ints.forEach(function(it){
+          rows.push(base.concat([fmtDateTime(it.dataHora),it.canal,it.resumo,TEMPS[it.temperatura]?TEMPS[it.temperatura].label:it.temperatura,
+            it.proximaAcao,fmtDate(it.dataFollowUp),it.pilar,it.produto,it.valor,STAGES[it.estagio]?STAGES[it.estagio].label:it.estagio]));
+        });
+      }
+    });
+    var csv = rows.map(function(r){
+      return r.map(function(cell){
+        var s = String(cell==null?"":cell).replace(/"/g,'""');
+        return /[",\n]/.test(s) ? '"'+s+'"' : s;
+      }).join(",");
+    }).join("\r\n");
+    var blob = new Blob(["﻿"+csv], {type:"text/csv;charset=utf-8;"});
+    var filename = "edusia_crm_export_"+todayISO()+".csv";
+    try{
+      var downloads = window.claude && window.claude.use ? await window.claude.use("downloads") : null;
+      if(downloads){
+        await downloads.save({filename: filename, data: blob});
+        toast("Arquivo exportado.");
+      } else {
+        toast("Exportação indisponível nesta visualização.");
+      }
+    }catch(e){
+      if(e && e.code==="declined"){ /* viewer cancelled, no message needed */ }
+      else { console.error(e); toast("Não foi possível exportar o CSV."); }
+    }
+  });
+
+  initDb();
+})();
+</script>
