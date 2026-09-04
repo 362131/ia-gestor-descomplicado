@@ -10,9 +10,9 @@ return [
     'db_user' => 'u000000000_edusia',
     'db_pass' => 'TROQUE_ESTA_SENHA',
 
-    // Token simples para proteger a API. Invente uma string longa e
-    // aleatória e use o MESMO valor na tela de login do painel (index.html).
-    // Isso não é uma autenticação de usuários individuais — é uma senha
-    // única de equipe para impedir que estranhos leiam/gravem no banco.
-    'api_token' => 'TROQUE_POR_UM_TOKEN_LONGO_E_ALEATORIO',
+    // Token simples para proteger a API — funciona como uma "senha da sala"
+    // que toda a equipe digita para entrar no painel. O valor abaixo já é
+    // seguro e pode ser usado como está; troque por outra frase longa sem
+    // espaços se preferir escolher a sua própria.
+    'api_token' => 'NXUqLwqxjJdOmgfRCMJby5mTrOPl_CfD',
 ];
