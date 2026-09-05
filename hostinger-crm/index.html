@@ -203,6 +203,7 @@
     <div style="display:flex;align-items:center;gap:.6rem;">
       <span id="meuNomeLabel" style="font-size:.82rem;color:var(--ash);"></span>
       <button class="btn btn-ghost btn-sm" id="btnTrocarSenha">Trocar minha senha</button>
+      <button class="btn btn-ghost btn-sm" id="btnSair">Sair</button>
       <button class="btn btn-ghost btn-sm" id="btnGerenciarEquipe" hidden>Gerenciar equipe</button>
       <button class="btn btn-ghost btn-sm" id="btnRelatorioAcessos" hidden>Relatório de acessos</button>
     </div>
@@ -211,8 +212,8 @@
   <div class="banner" id="firstUseBanner" hidden>
     <span>📋</span>
     <div>
-      <strong>Dados compartilhados com toda a equipe.</strong>
-      Cada contato, conversa e proposta cadastrados aqui ficam gravados no banco MySQL do Hostinger e visíveis para todos os vendedores e para a gestão comercial.
+      <strong>Cada vendedor vê só os próprios leads.</strong>
+      Contatos, conversas e propostas ficam gravados no banco MySQL do Hostinger. Só administradores têm acesso a todos os leads da equipe; o ranking de vendas é a única visão que todo mundo compartilha (sem mostrar valor dos colegas).
     </div>
     <button id="dismissBanner" title="Fechar aviso">✕</button>
   </div>
@@ -335,7 +336,7 @@
 <div class="modal-backdrop" id="rankingModalBackdrop" hidden>
   <div class="modal" style="width:min(560px,100%);">
     <h3>🏆 Ranking de vendas</h3>
-    <p style="color:var(--ash);font-size:.85rem;margin-top:-.6rem;">Ranking por negócios fechados-ganho. Valores em R$ aparecem apenas para administradores.</p>
+    <p style="color:var(--ash);font-size:.85rem;margin-top:-.6rem;">Ranking por negócios fechados-ganho, visível para toda a equipe. Você só vê o valor em R$ da sua própria linha (🔒 nas demais) — administradores veem todos.</p>
     <div id="rankingList"></div>
     <div class="form-actions"><button type="button" class="btn btn-ghost" id="btnFecharRanking">Fechar</button></div>
   </div>
@@ -379,7 +380,7 @@
   ["kpiGrid","listBody","listCount","detailPanel","fSearch","fVendedor","fEstagio","fPilar","fTemp","fPeriodo",
    "modalBackdrop","formContato","btnNovoContato","btnCancelModal","discPick","inpVendedor","btnExport",
    "firstUseBanner","dismissBanner","connError","gateScreen","appRoot","gateForm","gateEmail","gateSenha","gateError",
-   "meuNomeLabel","btnTrocarSenha","btnGerenciarEquipe","teamModalBackdrop","teamList","formNovoUsuario","btnFecharTeamModal",
+   "meuNomeLabel","btnTrocarSenha","btnSair","btnGerenciarEquipe","teamModalBackdrop","teamList","formNovoUsuario","btnFecharTeamModal",
    "btnSoAtrasados","btnRanking","btnExportExcel","btnExportPdf","lateBanner","btnRelatorioAcessos",
    "rankingModalBackdrop","rankingList","btnFecharRanking","accessModalBackdrop","accessList","btnFecharAccess",
    "modalTitle","btnSubmitContato"
@@ -715,7 +716,7 @@
           '<div class="tl-resumo">'+esc(it.resumo)+'</div>' +
           '<div class="tl-foot">' +
             '<span>🏷 '+esc(it.pilar)+' · '+esc(it.produto)+'</span>' +
-            (it.valorOculto ? '<span title="Somente o vendedor responsável e administradores veem este valor">🔒 valor restrito</span>' : (it.valor ? '<span class="tabular">'+fmtMoney(it.valor)+'</span>' : '')) +
+            (it.valor ? '<span class="tabular">'+fmtMoney(it.valor)+'</span>' : '') +
             (it.proximaAcao ? '<span>Próxima ação: '+esc(it.proximaAcao)+(it.dataFollowUp?' até '+fmtDate(it.dataFollowUp):'')+'</span>' : '') +
           '</div>' +
         '</div>';
@@ -870,43 +871,39 @@
       } else {
         ints.forEach(function(it){
           rows.push(base.concat([fmtDateTime(it.dataHora),it.canal,it.resumo,TEMPS[it.temperatura]?TEMPS[it.temperatura].label:it.temperatura,
-            it.proximaAcao,fmtDate(it.dataFollowUp),it.pilar,it.produto,it.valorOculto?"restrito":it.valor,STAGES[it.estagio]?STAGES[it.estagio].label:it.estagio]));
+            it.proximaAcao,fmtDate(it.dataFollowUp),it.pilar,it.produto,it.valor,STAGES[it.estagio]?STAGES[it.estagio].label:it.estagio]));
         });
       }
     });
     return {headers:headers, rows:rows};
   }
 
-  function renderRanking(){
-    var byVendedor = {};
-    state.contacts.forEach(function(c){
-      (c.interactions||[]).forEach(function(it){
-        var v = it.vendedorRegistro || c.vendedor || "—";
-        if(!byVendedor[v]) byVendedor[v] = {ganhos:0, valor:0};
-        if(it.estagio === "ganho"){
-          byVendedor[v].ganhos++;
-          byVendedor[v].valor += Number(it.valor)||0;
-        }
-      });
-    });
-    var list = Object.keys(byVendedor).map(function(k){ return {nome:k, ganhos:byVendedor[k].ganhos, valor:byVendedor[k].valor}; })
-      .sort(function(a,b){ return b.ganhos - a.ganhos; });
-
+  async function renderRanking(){
+    els.rankingList.innerHTML = '<div class="empty-state">Carregando...</div>';
+    var list;
+    try{
+      list = await api("ranking");
+    }catch(e){
+      console.error(e);
+      els.rankingList.innerHTML = '<div class="empty-state">Não foi possível carregar o ranking.</div>';
+      return;
+    }
+    list = (list||[]).filter(function(v){ return v.vendedor; });
     if(!list.length){
       els.rankingList.innerHTML = '<div class="empty-state">Ainda não há negócios fechados-ganho para ranquear.</div>';
       return;
     }
     els.rankingList.innerHTML = '<table style="width:100%;border-collapse:collapse;font-size:.9rem;">' +
       '<thead><tr style="text-align:left;color:var(--ash);font-size:.75rem;">' +
-      '<th style="padding:.4em 0;">#</th><th>Vendedor</th><th>Negócios ganhos</th>' +
-      (state.isAdmin ? '<th>Valor total</th>' : '') +
+      '<th style="padding:.4em 0;">#</th><th>Vendedor</th><th>Negócios ganhos</th><th>Valor</th>' +
       '</tr></thead><tbody>' +
       list.map(function(v,i){
-        return '<tr style="border-top:1px solid var(--line);">' +
+        var minhaLinha = v.ehMinhaLinha;
+        return '<tr style="border-top:1px solid var(--line);'+(minhaLinha?'background:var(--violet-soft);':'')+'">' +
           '<td style="padding:.5em 0;font-weight:700;">'+(i+1)+'º</td>' +
-          '<td>'+esc(v.nome)+'</td>' +
+          '<td>'+esc(v.vendedor)+(minhaLinha?' <span style="color:var(--ash-soft);font-size:.76rem;">(você)</span>':'')+'</td>' +
           '<td class="tabular">'+v.ganhos+'</td>' +
-          (state.isAdmin ? '<td class="tabular">'+fmtMoney(v.valor)+'</td>' : '') +
+          '<td class="tabular">'+(v.valor===null ? '🔒' : fmtMoney(v.valor))+'</td>' +
         '</tr>';
       }).join("") + '</tbody></table>';
   }
@@ -1079,6 +1076,12 @@
       }catch(e){
         console.error(e);
         toast(e.message || "Não foi possível trocar a senha.");
+      }
+    });
+
+    els.btnSair.addEventListener("click", function(){
+      if(confirm("Sair do painel?")){
+        logout("");
       }
     });
 

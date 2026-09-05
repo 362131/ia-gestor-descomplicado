@@ -98,15 +98,19 @@ $meuNome = $currentUser['nome'] ?? '';
 switch ($action) {
 
     case 'list': {
-        $contacts = $pdo->query('SELECT * FROM contacts ORDER BY created_at DESC')->fetchAll();
+        // Acesso total (todos os contatos) é só para administradores; cada
+        // vendedor só recebe os próprios leads (contacts.vendedor = seu nome).
+        if ($isAdmin) {
+            $contacts = $pdo->query('SELECT * FROM contacts ORDER BY created_at DESC')->fetchAll();
+        } else {
+            $stmt = $pdo->prepare('SELECT * FROM contacts WHERE vendedor = ? ORDER BY created_at DESC');
+            $stmt->execute([$meuNome]);
+            $contacts = $stmt->fetchAll();
+        }
         $interactions = $pdo->query('SELECT * FROM interactions ORDER BY data_hora DESC')->fetchAll();
 
         $byContact = [];
         foreach ($interactions as $it) {
-            // Valor da proposta: cada vendedor só vê o próprio; o total geral
-            // só é visível para administradores (o campo some para os demais).
-            $podeVerValor = $isAdmin || trim($it['vendedor_registro']) === trim($meuNome);
-
             $byContact[$it['contact_id']][] = [
                 'id' => $it['id'],
                 'dataHora' => str_replace(' ', 'T', $it['data_hora']),
@@ -117,14 +121,16 @@ switch ($action) {
                 'dataFollowUp' => $it['data_followup'],
                 'pilar' => $it['pilar'],
                 'produto' => $it['produto'],
-                'valor' => $podeVerValor ? (float)$it['valor'] : null,
-                'valorOculto' => !$podeVerValor,
+                'valor' => (float)$it['valor'],
                 'estagio' => $it['estagio'],
                 'vendedorRegistro' => $it['vendedor_registro'],
                 'createdAt' => str_replace(' ', 'T', $it['created_at']),
             ];
         }
 
+        // $byContact pode conter interações de contatos de outros vendedores
+        // (a query acima busca todas), mas só as dos contatos abaixo (já
+        // filtrados) chegam ao $out — nada de outros vendedores vaza.
         $out = [];
         foreach ($contacts as $c) {
             $out[] = [
@@ -222,6 +228,35 @@ switch ($action) {
         $id = reqStr($input['id'] ?? null, 'id');
         $pdo->prepare('DELETE FROM interactions WHERE id = ?')->execute([$id]);
         echo json_encode(['ok' => true]);
+        break;
+    }
+
+    case 'ranking': {
+        // Ranking geral (negócios fechados-ganho) visível para toda a
+        // equipe. O valor em R$ só aparece para administradores e para o
+        // próprio vendedor na sua própria linha — os demais veem só a
+        // posição e a quantidade de negócios ganhos.
+        $rows = $pdo->query("
+            SELECT c.vendedor AS vendedor,
+                   SUM(CASE WHEN i.estagio = 'ganho' THEN 1 ELSE 0 END) AS ganhos,
+                   SUM(CASE WHEN i.estagio = 'ganho' THEN i.valor ELSE 0 END) AS valor
+            FROM contacts c
+            LEFT JOIN interactions i ON i.contact_id = c.id
+            GROUP BY c.vendedor
+            ORDER BY ganhos DESC, valor DESC
+        ")->fetchAll();
+
+        $out = [];
+        foreach ($rows as $r) {
+            $ehMinhaLinha = trim($r['vendedor']) === trim($meuNome);
+            $out[] = [
+                'vendedor' => $r['vendedor'],
+                'ganhos' => (int)$r['ganhos'],
+                'valor' => ($isAdmin || $ehMinhaLinha) ? (float)$r['valor'] : null,
+                'ehMinhaLinha' => $ehMinhaLinha,
+            ];
+        }
+        echo json_encode($out);
         break;
     }
 
