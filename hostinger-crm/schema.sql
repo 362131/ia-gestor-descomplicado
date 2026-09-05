@@ -33,6 +33,16 @@ CREATE TABLE IF NOT EXISTS users (
 INSERT IGNORE INTO users (nome, email, password_hash, api_token, is_admin, created_at) VALUES
   ('SEU NOME', 'seu-email@exemplo.com.br', 'COLE_AQUI_O_HASH_BCRYPT_DA_SENHA', 'COLE_AQUI_UM_TOKEN_ALEATORIO', 1, NOW());
 
+CREATE TABLE IF NOT EXISTS access_log (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NULL,
+  nome VARCHAR(120) NOT NULL,
+  email VARCHAR(190) NOT NULL,
+  ip VARCHAR(64) DEFAULT '',
+  ocorrido_em DATETIME NOT NULL,
+  INDEX idx_access_log_data (ocorrido_em)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE IF NOT EXISTS sellers (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nome VARCHAR(120) NOT NULL UNIQUE

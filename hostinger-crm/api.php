@@ -58,6 +58,10 @@ if ($action === 'login') {
         fail(401, 'E-mail ou senha inválidos.');
     }
 
+    $ip = $_SERVER['REMOTE_ADDR'] ?? '';
+    $pdo->prepare('INSERT INTO access_log (user_id, nome, email, ip, ocorrido_em) VALUES (?, ?, ?, ?, ?)')
+        ->execute([$user['id'], $user['nome'], $user['email'], $ip, date('Y-m-d H:i:s')]);
+
     echo json_encode([
         'token' => $user['api_token'],
         'nome' => $user['nome'],
@@ -88,6 +92,9 @@ function requireAdmin($currentUser): void {
     }
 }
 
+$isAdmin = !empty($currentUser['is_admin']);
+$meuNome = $currentUser['nome'] ?? '';
+
 switch ($action) {
 
     case 'list': {
@@ -96,6 +103,10 @@ switch ($action) {
 
         $byContact = [];
         foreach ($interactions as $it) {
+            // Valor da proposta: cada vendedor só vê o próprio; o total geral
+            // só é visível para administradores (o campo some para os demais).
+            $podeVerValor = $isAdmin || trim($it['vendedor_registro']) === trim($meuNome);
+
             $byContact[$it['contact_id']][] = [
                 'id' => $it['id'],
                 'dataHora' => str_replace(' ', 'T', $it['data_hora']),
@@ -106,7 +117,8 @@ switch ($action) {
                 'dataFollowUp' => $it['data_followup'],
                 'pilar' => $it['pilar'],
                 'produto' => $it['produto'],
-                'valor' => (float)$it['valor'],
+                'valor' => $podeVerValor ? (float)$it['valor'] : null,
+                'valorOculto' => !$podeVerValor,
                 'estagio' => $it['estagio'],
                 'vendedorRegistro' => $it['vendedor_registro'],
                 'createdAt' => str_replace(' ', 'T', $it['created_at']),
@@ -275,6 +287,20 @@ switch ($action) {
         }
         $pdo->prepare('INSERT IGNORE INTO sellers (nome) VALUES (?)')->execute([$nome]);
         echo json_encode(['ok' => true]);
+        break;
+    }
+
+    case 'list_access_log': {
+        requireAdmin($currentUser);
+        $rows = $pdo->query('SELECT nome, email, ip, ocorrido_em FROM access_log ORDER BY ocorrido_em DESC LIMIT 300')->fetchAll();
+        echo json_encode(array_map(function($r) {
+            return [
+                'nome' => $r['nome'],
+                'email' => $r['email'],
+                'ip' => $r['ip'],
+                'ocorridoEm' => str_replace(' ', 'T', $r['ocorrido_em']),
+            ];
+        }, $rows));
         break;
     }
 

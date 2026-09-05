@@ -204,6 +204,7 @@
       <span id="meuNomeLabel" style="font-size:.82rem;color:var(--ash);"></span>
       <button class="btn btn-ghost btn-sm" id="btnTrocarSenha">Trocar minha senha</button>
       <button class="btn btn-ghost btn-sm" id="btnGerenciarEquipe" hidden>Gerenciar equipe</button>
+      <button class="btn btn-ghost btn-sm" id="btnRelatorioAcessos" hidden>Relatório de acessos</button>
     </div>
   </header>
 
@@ -217,6 +218,7 @@
   </div>
 
   <div class="banner error" id="connError" hidden></div>
+  <div class="banner error" id="lateBanner" hidden style="cursor:pointer;"></div>
 
   <section class="kpi-grid" id="kpiGrid"></section>
 
@@ -245,8 +247,12 @@
       <option value="30">Últimos 30 dias</option>
       <option value="90">Últimos 90 dias</option>
     </select>
+    <button class="btn btn-ghost btn-sm" id="btnSoAtrasados">⚠ Só atrasados</button>
     <span class="spacer"></span>
-    <button class="btn btn-ghost btn-sm" id="btnExport">⭳ Exportar CSV</button>
+    <button class="btn btn-ghost btn-sm" id="btnRanking">🏆 Ranking</button>
+    <button class="btn btn-ghost btn-sm" id="btnExport">⭳ CSV</button>
+    <button class="btn btn-ghost btn-sm" id="btnExportExcel">⭳ Excel</button>
+    <button class="btn btn-ghost btn-sm" id="btnExportPdf">⭳ PDF</button>
     <button class="btn btn-primary" id="btnNovoContato">+ Novo contato</button>
   </div>
 
@@ -265,7 +271,7 @@
 
 <div class="modal-backdrop" id="modalBackdrop" hidden>
   <div class="modal">
-    <h3>Novo contato</h3>
+    <h3 id="modalTitle">Novo contato</h3>
     <form id="formContato">
       <div class="row2">
         <div class="field field-req"><label>Nome completo</label><input required name="nome"></div>
@@ -301,7 +307,7 @@
       </div>
       <div class="form-actions">
         <button type="button" class="btn btn-ghost" id="btnCancelModal">Cancelar</button>
-        <button type="submit" class="btn btn-primary">Salvar contato</button>
+        <button type="submit" class="btn btn-primary" id="btnSubmitContato">Salvar contato</button>
       </div>
     </form>
   </div>
@@ -326,6 +332,27 @@
   </div>
 </div>
 
+<div class="modal-backdrop" id="rankingModalBackdrop" hidden>
+  <div class="modal" style="width:min(560px,100%);">
+    <h3>🏆 Ranking de vendas</h3>
+    <p style="color:var(--ash);font-size:.85rem;margin-top:-.6rem;">Ranking por negócios fechados-ganho. Valores em R$ aparecem apenas para administradores.</p>
+    <div id="rankingList"></div>
+    <div class="form-actions"><button type="button" class="btn btn-ghost" id="btnFecharRanking">Fechar</button></div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="accessModalBackdrop" hidden>
+  <div class="modal" style="width:min(640px,100%);">
+    <h3>Relatório de acessos</h3>
+    <p style="color:var(--ash);font-size:.85rem;margin-top:-.6rem;">Últimos 300 logins da equipe, mais recentes primeiro.</p>
+    <div id="accessList" style="max-height:60vh;overflow-y:auto;"></div>
+    <div class="form-actions"><button type="button" class="btn btn-ghost" id="btnFecharAccess">Fechar</button></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
 <script>
 (function(){
   "use strict";
@@ -352,10 +379,13 @@
   ["kpiGrid","listBody","listCount","detailPanel","fSearch","fVendedor","fEstagio","fPilar","fTemp","fPeriodo",
    "modalBackdrop","formContato","btnNovoContato","btnCancelModal","discPick","inpVendedor","btnExport",
    "firstUseBanner","dismissBanner","connError","gateScreen","appRoot","gateForm","gateEmail","gateSenha","gateError",
-   "meuNomeLabel","btnTrocarSenha","btnGerenciarEquipe","teamModalBackdrop","teamList","formNovoUsuario","btnFecharTeamModal"
+   "meuNomeLabel","btnTrocarSenha","btnGerenciarEquipe","teamModalBackdrop","teamList","formNovoUsuario","btnFecharTeamModal",
+   "btnSoAtrasados","btnRanking","btnExportExcel","btnExportPdf","lateBanner","btnRelatorioAcessos",
+   "rankingModalBackdrop","rankingList","btnFecharRanking","accessModalBackdrop","accessList","btnFecharAccess",
+   "modalTitle","btnSubmitContato"
   ].forEach(function(id){ els[id]=document.getElementById(id); });
 
-  var state = { contacts: [], sellers: [], selectedId: null, ready:false, token:"", meuNome:"", isAdmin:false };
+  var state = { contacts: [], sellers: [], selectedId: null, ready:false, token:"", meuNome:"", isAdmin:false, editingContactId:null, onlyLate:false };
 
   function uid(){ return Math.random().toString(36).slice(2,10) + Date.now().toString(36); }
   function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
@@ -478,6 +508,7 @@
   function boot(){
     els.meuNomeLabel.textContent = state.meuNome ? ("Olá, " + state.meuNome) : "";
     els.btnGerenciarEquipe.hidden = !state.isAdmin;
+    els.btnRelatorioAcessos.hidden = !state.isAdmin;
     initBanner();
     wireStaticUI();
     loadContacts();
@@ -550,10 +581,12 @@
       .sort(function(a,b){ return b.n-a.n; });
     var maxN = vendList.length ? vendList[0].n : 1;
 
+    var pipelineLabel = state.isAdmin ? "Pipeline em aberto (total geral)" : "Meu pipeline em aberto";
+
     els.kpiGrid.innerHTML =
       '<div class="kpi"><div class="label">Total de leads</div><div class="value">'+total+'</div><div class="sub">contatos cadastrados</div></div>' +
       '<div class="kpi"><div class="label">Taxa de conversão</div><div class="value">'+conv.toFixed(1)+'%</div><div class="sub">'+ganhos+' fechado(s)-ganho de '+total+'</div></div>' +
-      '<div class="kpi"><div class="label">Pipeline em aberto</div><div class="value">'+fmtMoney(pipeline)+'</div><div class="sub">propostas ativas</div></div>' +
+      '<div class="kpi"><div class="label">'+pipelineLabel+'</div><div class="value">'+fmtMoney(pipeline)+'</div><div class="sub">propostas ativas</div></div>' +
       '<div class="kpi"><div class="label">Follow-ups atrasados</div><div class="value '+(atrasados?"warn":"")+'">'+atrasados+'</div><div class="sub">ação vencida</div></div>' +
       '<div class="kpi vendedores"><div class="label">Leads por vendedor</div>' +
         vendList.slice(0,4).map(function(v){
@@ -565,6 +598,13 @@
     els.fVendedor.innerHTML = '<option value="">Vendedor (todos)</option>' +
       vendList.map(function(v){ return '<option value="'+esc(v.name)+'">'+esc(v.name)+'</option>'; }).join("");
     els.fVendedor.value = cur;
+
+    if(atrasados > 0){
+      els.lateBanner.hidden = false;
+      els.lateBanner.textContent = "⚠ " + atrasados + (atrasados===1 ? " follow-up atrasado" : " follow-ups atrasados") + " — clique para filtrar.";
+    } else {
+      els.lateBanner.hidden = true;
+    }
   }
 
   // ---------- Filtering ----------
@@ -588,6 +628,7 @@
         var refDate = li ? new Date(li.dataHora||li.createdAt) : new Date(c.createdAt);
         if(refDate.getTime() < cutoff) return false;
       }
+      if(state.onlyLate && !isLate(c)) return false;
       return true;
     }).sort(function(a,b){
       var da = a.interactions && a.interactions.length ? new Date(lastInteraction(a).dataHora||lastInteraction(a).createdAt) : new Date(a.createdAt||0);
@@ -643,7 +684,10 @@
     var html = '';
     html += '<div class="detail-head"><div><h2>'+esc(c.nome)+'</h2>' +
       '<div class="detail-sub">'+esc(c.empresa||"Sem empresa")+(c.cargo?" · "+esc(c.cargo):"")+'</div></div>' +
-      '<button class="btn btn-ghost btn-sm" id="btnDeleteContact">Remover contato</button></div>';
+      '<div style="display:flex;gap:.5em;">' +
+      '<button class="btn btn-ghost btn-sm" id="btnEditContact">Editar contato</button>' +
+      '<button class="btn btn-ghost btn-sm" id="btnDeleteContact">Remover contato</button>' +
+      '</div></div>';
 
     html += '<div class="kv-grid">' +
       kv("Telefone / WhatsApp", esc(c.telefone||"—")) +
@@ -671,7 +715,7 @@
           '<div class="tl-resumo">'+esc(it.resumo)+'</div>' +
           '<div class="tl-foot">' +
             '<span>🏷 '+esc(it.pilar)+' · '+esc(it.produto)+'</span>' +
-            (it.valor ? '<span class="tabular">'+fmtMoney(it.valor)+'</span>' : '') +
+            (it.valorOculto ? '<span title="Somente o vendedor responsável e administradores veem este valor">🔒 valor restrito</span>' : (it.valor ? '<span class="tabular">'+fmtMoney(it.valor)+'</span>' : '')) +
             (it.proximaAcao ? '<span>Próxima ação: '+esc(it.proximaAcao)+(it.dataFollowUp?' até '+fmtDate(it.dataFollowUp):'')+'</span>' : '') +
           '</div>' +
         '</div>';
@@ -712,6 +756,10 @@
       if(confirm("Remover \""+c.nome+"\" e todo o histórico? Esta ação não pode ser desfeita.")){
         deleteContact(c.id);
       }
+    });
+
+    document.getElementById("btnEditContact").addEventListener("click", function(){
+      openContactModal(c);
     });
 
     document.getElementById("formInteracao").addEventListener("submit", async function(ev){
@@ -777,6 +825,92 @@
 
   function kv(k,v){ return '<div class="kv"><div class="k">'+k+'</div><div class="v">'+v+'</div></div>'; }
 
+  function openContactModal(contact){
+    var form = els.formContato;
+    form.reset();
+    els.discPick.setAttribute("data-value","");
+    els.discPick.querySelectorAll("button").forEach(function(x){ x.className=""; });
+
+    if(contact){
+      state.editingContactId = contact.id;
+      els.modalTitle.textContent = "Editar contato";
+      els.btnSubmitContato.textContent = "Salvar alterações";
+      form.elements["nome"].value = contact.nome||"";
+      form.elements["empresa"].value = contact.empresa||"";
+      form.elements["cargo"].value = contact.cargo||"";
+      form.elements["telefone"].value = contact.telefone||"";
+      form.elements["email"].value = contact.email||"";
+      form.elements["origem"].value = contact.origem||"";
+      var disc = contact.disc||"";
+      els.discPick.setAttribute("data-value", disc);
+      els.discPick.querySelectorAll("button").forEach(function(x){
+        x.classList.toggle("sel-"+x.getAttribute("data-l"), disc.indexOf(x.getAttribute("data-l"))!==-1);
+      });
+      renderSellerOptions(els.inpVendedor, contact.vendedor||"");
+    } else {
+      state.editingContactId = null;
+      els.modalTitle.textContent = "Novo contato";
+      els.btnSubmitContato.textContent = "Salvar contato";
+      var prefill = state.meuNome || "";
+      if(!prefill){ try{ prefill = localStorage.getItem("edusia_crm_meu_nome") || ""; }catch(e){} }
+      renderSellerOptions(els.inpVendedor, prefill);
+    }
+    els.modalBackdrop.hidden = false;
+  }
+
+  function buildExportRows(){
+    var headers = ["nome","empresa","cargo","telefone","email","origem","disc","vendedor_responsavel","tags","cadastrado_em",
+      "data_conversa","canal","resumo","temperatura","proxima_acao","data_followup","pilar","produto","valor_proposta","estagio","vendedor_registro"];
+    var rows = [headers];
+    state.contacts.forEach(function(c){
+      var base = [c.nome,c.empresa,c.cargo,c.telefone,c.email,c.origem,c.disc,c.vendedor,(c.tags||[]).join("|"),fmtDate(c.createdAt)];
+      var ints = c.interactions||[];
+      if(!ints.length){
+        rows.push(base.concat(["","","","","","","","","",""]));
+      } else {
+        ints.forEach(function(it){
+          rows.push(base.concat([fmtDateTime(it.dataHora),it.canal,it.resumo,TEMPS[it.temperatura]?TEMPS[it.temperatura].label:it.temperatura,
+            it.proximaAcao,fmtDate(it.dataFollowUp),it.pilar,it.produto,it.valorOculto?"restrito":it.valor,STAGES[it.estagio]?STAGES[it.estagio].label:it.estagio]));
+        });
+      }
+    });
+    return {headers:headers, rows:rows};
+  }
+
+  function renderRanking(){
+    var byVendedor = {};
+    state.contacts.forEach(function(c){
+      (c.interactions||[]).forEach(function(it){
+        var v = it.vendedorRegistro || c.vendedor || "—";
+        if(!byVendedor[v]) byVendedor[v] = {ganhos:0, valor:0};
+        if(it.estagio === "ganho"){
+          byVendedor[v].ganhos++;
+          byVendedor[v].valor += Number(it.valor)||0;
+        }
+      });
+    });
+    var list = Object.keys(byVendedor).map(function(k){ return {nome:k, ganhos:byVendedor[k].ganhos, valor:byVendedor[k].valor}; })
+      .sort(function(a,b){ return b.ganhos - a.ganhos; });
+
+    if(!list.length){
+      els.rankingList.innerHTML = '<div class="empty-state">Ainda não há negócios fechados-ganho para ranquear.</div>';
+      return;
+    }
+    els.rankingList.innerHTML = '<table style="width:100%;border-collapse:collapse;font-size:.9rem;">' +
+      '<thead><tr style="text-align:left;color:var(--ash);font-size:.75rem;">' +
+      '<th style="padding:.4em 0;">#</th><th>Vendedor</th><th>Negócios ganhos</th>' +
+      (state.isAdmin ? '<th>Valor total</th>' : '') +
+      '</tr></thead><tbody>' +
+      list.map(function(v,i){
+        return '<tr style="border-top:1px solid var(--line);">' +
+          '<td style="padding:.5em 0;font-weight:700;">'+(i+1)+'º</td>' +
+          '<td>'+esc(v.nome)+'</td>' +
+          '<td class="tabular">'+v.ganhos+'</td>' +
+          (state.isAdmin ? '<td class="tabular">'+fmtMoney(v.valor)+'</td>' : '') +
+        '</tr>';
+      }).join("") + '</tbody></table>';
+  }
+
   async function deleteContact(id){
     try{
       await api("delete_contact", {body:{id:id}});
@@ -802,7 +936,7 @@
       els[id].addEventListener("change", renderList);
     });
 
-    els.btnNovoContato.addEventListener("click", function(){ els.modalBackdrop.hidden=false; });
+    els.btnNovoContato.addEventListener("click", function(){ openContactModal(null); });
     els.btnCancelModal.addEventListener("click", function(){ els.modalBackdrop.hidden=true; });
     els.modalBackdrop.addEventListener("click", function(ev){ if(ev.target===els.modalBackdrop) els.modalBackdrop.hidden=true; });
 
@@ -826,10 +960,13 @@
       if(!nome || !telefone || !origem || !vendedor){ toast("Preencha os campos obrigatórios."); return; }
       try{ localStorage.setItem("edusia_crm_meu_nome", vendedor); }catch(e){}
 
+      var editing = state.contacts.find(function(x){ return x.id===state.editingContactId; });
       var contato = {
+        id: state.editingContactId || undefined,
         nome: nome, empresa: fd.get("empresa")||"", cargo: fd.get("cargo")||"",
         telefone: telefone, email: fd.get("email")||"", origem: origem,
-        disc: els.discPick.getAttribute("data-value")||"", vendedor: vendedor, tags: []
+        disc: els.discPick.getAttribute("data-value")||"", vendedor: vendedor,
+        tags: editing ? (editing.tags||[]) : []
       };
       try{
         var res = await api("save_contact", {body: contato});
@@ -839,31 +976,18 @@
         els.discPick.querySelectorAll("button").forEach(function(x){ x.className=""; });
         els.inpVendedor.value = vendedor;
         els.modalBackdrop.hidden = true;
-        toast("Contato cadastrado.");
+        toast(state.editingContactId ? "Contato atualizado." : "Contato cadastrado.");
+        state.editingContactId = null;
         await loadContacts();
       }catch(e){
         console.error(e);
-        toast(e.message || "Não foi possível cadastrar o contato.");
+        toast(e.message || "Não foi possível salvar o contato.");
       }
     });
 
     els.btnExport.addEventListener("click", function(){
-      var headers = ["nome","empresa","cargo","telefone","email","origem","disc","vendedor_responsavel","tags","cadastrado_em",
-        "data_conversa","canal","resumo","temperatura","proxima_acao","data_followup","pilar","produto","valor_proposta","estagio","vendedor_registro"];
-      var rows = [headers];
-      state.contacts.forEach(function(c){
-        var base = [c.nome,c.empresa,c.cargo,c.telefone,c.email,c.origem,c.disc,c.vendedor,(c.tags||[]).join("|"),fmtDate(c.createdAt)];
-        var ints = c.interactions||[];
-        if(!ints.length){
-          rows.push(base.concat(["","","","","","","","","",""]));
-        } else {
-          ints.forEach(function(it){
-            rows.push(base.concat([fmtDateTime(it.dataHora),it.canal,it.resumo,TEMPS[it.temperatura]?TEMPS[it.temperatura].label:it.temperatura,
-              it.proximaAcao,fmtDate(it.dataFollowUp),it.pilar,it.produto,it.valor,STAGES[it.estagio]?STAGES[it.estagio].label:it.estagio]));
-          });
-        }
-      });
-      var csv = rows.map(function(r){
+      var data = buildExportRows();
+      var csv = data.rows.map(function(r){
         return r.map(function(cell){
           var s = String(cell==null?"":cell).replace(/"/g,'""');
           return /[",\n]/.test(s) ? '"'+s+'"' : s;
@@ -876,6 +1000,72 @@
       document.body.appendChild(a); a.click(); a.remove();
       setTimeout(function(){ URL.revokeObjectURL(url); }, 2000);
     });
+
+    els.btnExportExcel.addEventListener("click", function(){
+      if(typeof XLSX === "undefined"){ toast("Biblioteca de Excel não carregou. Verifique sua conexão e tente de novo."); return; }
+      var data = buildExportRows();
+      var ws = XLSX.utils.aoa_to_sheet(data.rows);
+      var wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "EdusIA CRM");
+      XLSX.writeFile(wb, "edusia_crm_export_"+todayISO()+".xlsx");
+    });
+
+    els.btnExportPdf.addEventListener("click", function(){
+      if(typeof window.jspdf === "undefined"){ toast("Biblioteca de PDF não carregou. Verifique sua conexão e tente de novo."); return; }
+      var data = buildExportRows();
+      var doc = new window.jspdf.jsPDF({orientation:"landscape", unit:"pt"});
+      doc.setFontSize(14);
+      doc.text("EdusIA — Painel Comercial — Exportação " + todayISO(), 30, 30);
+      doc.autoTable({
+        head: [data.rows[0]],
+        body: data.rows.slice(1),
+        startY: 45,
+        styles: { fontSize: 7, cellPadding: 3 },
+        headStyles: { fillColor: [91,63,224] },
+      });
+      doc.save("edusia_crm_export_"+todayISO()+".pdf");
+    });
+
+    function setOnlyLate(v){
+      state.onlyLate = v;
+      els.btnSoAtrasados.classList.toggle("btn-ghost", !v);
+      els.btnSoAtrasados.classList.toggle("btn-primary", v);
+      renderList();
+    }
+    els.btnSoAtrasados.addEventListener("click", function(){ setOnlyLate(!state.onlyLate); });
+    els.lateBanner.addEventListener("click", function(){ setOnlyLate(true); });
+
+    els.btnRanking.addEventListener("click", function(){
+      renderRanking();
+      els.rankingModalBackdrop.hidden = false;
+    });
+    els.btnFecharRanking.addEventListener("click", function(){ els.rankingModalBackdrop.hidden = true; });
+    els.rankingModalBackdrop.addEventListener("click", function(ev){ if(ev.target===els.rankingModalBackdrop) els.rankingModalBackdrop.hidden = true; });
+
+    els.btnRelatorioAcessos.addEventListener("click", async function(){
+      els.accessModalBackdrop.hidden = false;
+      els.accessList.innerHTML = '<div class="empty-state">Carregando...</div>';
+      try{
+        var rows = await api("list_access_log");
+        els.accessList.innerHTML = '<table style="width:100%;border-collapse:collapse;font-size:.85rem;">' +
+          '<thead><tr style="text-align:left;color:var(--ash);font-size:.75rem;">' +
+          '<th style="padding:.4em 0;">Nome</th><th>E-mail</th><th>Quando</th><th>IP</th></tr></thead><tbody>' +
+          rows.map(function(r){
+            return '<tr style="border-top:1px solid var(--line);">' +
+              '<td style="padding:.4em 0;">'+esc(r.nome)+'</td>' +
+              '<td>'+esc(r.email)+'</td>' +
+              '<td class="tabular">'+fmtDateTime(r.ocorridoEm)+'</td>' +
+              '<td class="tabular">'+esc(r.ip)+'</td>' +
+            '</tr>';
+          }).join("") + '</tbody></table>';
+        if(!rows.length) els.accessList.innerHTML = '<div class="empty-state">Nenhum acesso registrado ainda.</div>';
+      }catch(e){
+        console.error(e);
+        els.accessList.innerHTML = '<div class="empty-state">Não foi possível carregar o relatório.</div>';
+      }
+    });
+    els.btnFecharAccess.addEventListener("click", function(){ els.accessModalBackdrop.hidden = true; });
+    els.accessModalBackdrop.addEventListener("click", function(ev){ if(ev.target===els.accessModalBackdrop) els.accessModalBackdrop.hidden = true; });
 
     els.btnTrocarSenha.addEventListener("click", async function(){
       var nova = prompt("Digite sua nova senha (mínimo 6 caracteres):");

@@ -120,6 +120,47 @@ e-mail e senha.
 
 ---
 
+## Novidades desta versão
+
+Se seu painel já estava funcionando (banco `contacts`/`interactions`/`users`/
+`sellers` já criados), você só precisa rodar a tabela nova abaixo no SQL do
+phpMyAdmin e reenviar `index.html` e `api.php` (o `config.php` não muda).
+
+```sql
+CREATE TABLE IF NOT EXISTS access_log (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NULL,
+  nome VARCHAR(120) NOT NULL,
+  email VARCHAR(190) NOT NULL,
+  ip VARCHAR(64) DEFAULT '',
+  ocorrido_em DATETIME NOT NULL,
+  INDEX idx_access_log_data (ocorrido_em)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+O que mudou no painel:
+
+- **Valores por vendedor:** cada vendedor só vê o **valor em R$** das próprias
+  propostas — as dos colegas aparecem como "🔒 valor restrito". Só quem é
+  **administrador** vê o valor de todo mundo e o KPI "Pipeline em aberto
+  (total geral)"; para os demais, o mesmo KPI mostra só "Meu pipeline em
+  aberto". Isso é reforçado no servidor (`api.php`), não só escondido na
+  tela — nem inspecionando o site dá para ver o valor de outro vendedor.
+- **Editar contato:** botão **"Editar contato"** no painel de detalhes, ao
+  lado de "Remover contato".
+- **Exportar Excel e PDF:** dois novos botões na barra de ferramentas, além
+  do CSV que já existia.
+- **Alerta de atraso mais visível:** aparece uma faixa vermelha no topo
+  quando há follow-ups vencidos — clique nela (ou no botão **"⚠ Só
+  atrasados"**) para filtrar só esses contatos.
+- **Relatório de acessos** (só administrador): botão no topo mostra quem
+  entrou no painel, quando e de qual IP.
+- **Ranking de vendas** (todo mundo vê): botão **"🏆 Ranking"** mostra a
+  posição de cada vendedor pelo número de negócios fechados-ganho — sem
+  mostrar valores para quem não é administrador.
+
+---
+
 ## Se algo der errado
 
 | Mensagem/sintoma | O que fazer |
