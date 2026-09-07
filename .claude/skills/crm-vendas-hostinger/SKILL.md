@@ -1,11 +1,11 @@
 ---
 name: crm-vendas-hostinger
-description: Gera um mini-CRM de vendas completo (PHP + MySQL, pronto para hospedagem compartilhada Hostinger) com login individual por vendedor, controle de acesso por perfil (vendedor só vê os próprios leads; administrador vê tudo), histórico de conversas, perfil DISC, ranking de vendas sem vazar valor entre vendedores, exportação CSV/Excel/PDF e manuais de uso em PDF (um para administrador, um só para vendedor) — tudo com o nome e os pilares/categorias da empresa do usuário. Use esta skill sempre que o usuário pedir para criar, montar ou adaptar um CRM de vendas, painel comercial, sistema de leads, funil de vendas ou controle de propostas para uma equipe pequena hospedada no Hostinger (ou hospedagem compartilhada PHP/MySQL equivalente) — mesmo que ele não diga "CRM" explicitamente, como "preciso de um sistema para minha equipe de vendas acompanhar clientes" ou "quero um painel onde cada vendedor só veja os próprios leads". Funciona para qualquer empresa: basta informar o nome dela (e, se quiser, os pilares/categorias de produto e a equipe inicial) que a skill adapta textos, marca e conteúdo.
+description: Gera um CRM de vendas completo (PHP + MySQL, pronto para hospedagem compartilhada Hostinger) com login individual por vendedor, controle de acesso por perfil (vendedor só vê os próprios leads; administrador vê tudo), histórico de conversas, perfil DISC, ranking de vendas sem vazar valor entre vendedores, exportação CSV/Excel/PDF e manuais de uso em PDF (um para administrador, um só para vendedor) — tudo com o nome e os pilares/categorias da empresa do usuário. Use esta skill sempre que o usuário pedir para criar, montar ou adaptar um CRM de vendas, painel comercial, sistema de leads, funil de vendas ou controle de propostas para uma equipe pequena hospedada no Hostinger (ou hospedagem compartilhada PHP/MySQL equivalente) — mesmo que ele não diga "CRM" explicitamente, como "preciso de um sistema para minha equipe de vendas acompanhar clientes" ou "quero um painel onde cada vendedor só veja os próprios leads". Funciona para qualquer empresa: basta informar o nome dela (e, se quiser, os pilares/categorias de produto e a equipe inicial) que a skill adapta textos, marca e conteúdo.
 ---
 
 # CRM de Vendas para Hostinger (PHP + MySQL)
 
-Esta skill gera uma cópia completa e funcional do mini-CRM de vendas construído
+Esta skill gera uma cópia completa e funcional do CRM de vendas construído
 originalmente para o EdusIA Instituto — adaptada para **qualquer empresa**,
 a partir de um template já testado (`assets/template/`). Não escreva o
 sistema do zero: copie e personalize o template, é muito mais confiável do
