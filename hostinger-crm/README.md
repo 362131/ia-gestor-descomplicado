@@ -158,6 +158,10 @@ O que mudou no painel:
 - **Ranking de vendas** (todo mundo vê): botão **"🏆 Ranking"** mostra a
   posição de cada vendedor pelo número de negócios fechados-ganho — sem
   mostrar valores para quem não é administrador.
+- **Dica de abordagem por perfil DISC**: quando o contato tem um perfil DISC
+  identificado, aparece automaticamente uma caixa com dicas de como
+  convencer aquele tipo de perfil (D, I, S ou C) — sem precisar de IA, é um
+  texto fixo baseado na metodologia DISC.
 
 ---
 

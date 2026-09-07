@@ -131,6 +131,10 @@ e-mail e senha.
 - **Relatório de acessos** (só administrador): quem entrou, quando e de qual IP.
 - **Ranking de vendas** (toda a equipe vê a posição de todos; o valor em R$
   só aparece na própria linha e para administradores).
+- **Dica de abordagem por perfil DISC**: quando o contato tem um perfil DISC
+  identificado, aparece automaticamente uma caixa com dicas de como
+  convencer aquele tipo de perfil (D, I, S ou C) — sem precisar de IA, é um
+  texto fixo baseado na metodologia DISC.
 
 ---
 

@@ -148,6 +148,7 @@
   .form-actions{ display:flex; gap:.6em; justify-content:flex-end; margin-top:.5em; }
   .ai-reply-box{ border:1px solid var(--violet-soft); background:var(--violet-soft); border-radius:var(--radius-m); padding:1em; margin-top:.6em; }
   .ai-reply-box textarea{ width:100%; box-sizing:border-box; }
+  .disc-tip-box{ border:1px solid var(--line); background:color-mix(in srgb, var(--amber) 12%, transparent); border-radius:var(--radius-m); padding:.8em 1em; margin-top:.8em; font-size:.88rem; line-height:1.5; }
 
   .picker-empty{ color:var(--ash); text-align:center; padding:4em 1em; }
 
@@ -375,6 +376,12 @@
     frio:{label:"Frio", color:"var(--blue)"}
   };
   var DISC_COLOR = {D:"var(--red)", I:"var(--amber)", S:"var(--green)", C:"var(--blue)"};
+  var DISC_TIPS = {
+    D: "Seja direto e objetivo, foque em resultado e no que ele ganha com isso. Não enrole com muitos detalhes — apresente 2-3 opções claras e deixe ele decidir rápido. Evite parecer indeciso ou dar rodeio.",
+    I: "Seja entusiasmado, construa relação antes de falar de preço. Use histórias de outros clientes, elogios genuínos e uma comunicação mais leve. Evite excesso de dados técnicos — ele compra pela emoção e confiança em você.",
+    S: "Vá com calma, ele não gosta de pressão nem de mudanças bruscas. Mostre passo a passo como funciona, reforce que terá suporte contínuo e dê tempo para ele decidir sem se sentir empurrado.",
+    C: "Traga dados, números, comparações e evidências concretas. Ele analisa antes de decidir — envie material detalhado, estudos de caso, e evite pressioná-lo por uma resposta rápida."
+  };
   var PILARES = ["IA na Prática Presencial","IA na Prática Online ao Vivo","Workshop","In Company"];
   var CANAIS = ["WhatsApp","Telefone","Presencial","E-mail","Videochamada"];
 
@@ -700,6 +707,11 @@
       kv("Perfil DISC", discFull ? '<span class="badge" style="background:'+ (DISC_COLOR[discFull.charAt(0)]||"var(--line)") +';color:#fff">'+esc(discFull)+'</span>' : "não identificado") +
       kv("Cadastrado em", fmtDate(c.createdAt)) +
     '</div>';
+
+    var discFirstLetter = discFull.trim().charAt(0).toUpperCase();
+    if(DISC_TIPS[discFirstLetter]){
+      html += '<div class="disc-tip-box">💡 <strong>Como convencer o perfil '+discFirstLetter+':</strong> '+esc(DISC_TIPS[discFirstLetter])+'</div>';
+    }
 
     html += '<div class="kv"><div class="k">Tags</div><div class="tags-editor" id="tagsEditor">' +
       (c.tags||[]).map(function(t,i){ return '<span class="tag-chip">'+esc(t)+' <span class="rm" data-i="'+i+'">✕</span></span>'; }).join("") +
