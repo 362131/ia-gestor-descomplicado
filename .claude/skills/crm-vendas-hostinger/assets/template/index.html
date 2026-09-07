@@ -1006,15 +1006,38 @@
     els.btnExportPdf.addEventListener("click", function(){
       if(typeof window.jspdf === "undefined"){ toast("Biblioteca de PDF não carregou. Verifique sua conexão e tente de novo."); return; }
       var data = buildExportRows();
-      var doc = new window.jspdf.jsPDF({orientation:"landscape", unit:"pt"});
+      var doc = new window.jspdf.jsPDF({orientation:"landscape", unit:"pt", format:"a3"});
       doc.setFontSize(14);
       doc.text("{{EMPRESA_CURTO}} — Painel Comercial — Exportação " + todayISO(), 30, 30);
       doc.autoTable({
         head: [data.rows[0]],
         body: data.rows.slice(1),
         startY: 45,
-        styles: { fontSize: 7, cellPadding: 3 },
+        styles: { fontSize: 7, cellPadding: 3, overflow: "linebreak" },
         headStyles: { fillColor: [91,63,224] },
+        columnStyles: {
+          0: { cellWidth: 70 },  // nome
+          1: { cellWidth: 70 },  // empresa
+          2: { cellWidth: 50 },  // cargo
+          3: { cellWidth: 45 },  // telefone
+          4: { cellWidth: 75 },  // email
+          5: { cellWidth: 40 },  // origem
+          6: { cellWidth: 25 },  // disc
+          7: { cellWidth: 55 },  // vendedor_responsavel
+          8: { cellWidth: 45 },  // tags
+          9: { cellWidth: 45 },  // cadastrado_em
+          10: { cellWidth: 55 }, // data_conversa
+          11: { cellWidth: 45 }, // canal
+          12: { cellWidth: 85 }, // resumo
+          13: { cellWidth: 40 }, // temperatura
+          14: { cellWidth: 65 }, // proxima_acao
+          15: { cellWidth: 45 }, // data_followup
+          16: { cellWidth: 45 }, // pilar
+          17: { cellWidth: 50 }, // produto
+          18: { cellWidth: 45 }, // valor_proposta
+          19: { cellWidth: 45 }, // estagio
+          20: { cellWidth: 50 }, // vendedor_registro
+        },
       });
       doc.save("{{SLUG}}_crm_export_"+todayISO()+".pdf");
     });
