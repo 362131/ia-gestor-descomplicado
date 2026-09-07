@@ -161,6 +161,56 @@ O que mudou no painel:
 
 ---
 
+## E-mails automáticos de follow-up
+
+O painel pode enviar e-mails sozinho, uma vez por dia, para cada interação
+cujo campo **"Próximo follow-up"** cair na data de hoje (e o negócio ainda
+não estiver fechado): um e-mail para o **lead** (se ele tiver e-mail
+cadastrado) e um alerta interno para o **vendedor responsável** (se ele
+tiver conta no painel). Cada follow-up só gera um e-mail — depois de
+enviado, não é repetido no dia seguinte.
+
+### Se seu banco já existia antes desta função
+
+Rode este SQL uma vez no phpMyAdmin (adiciona a coluna que controla se o
+e-mail já foi enviado):
+
+```sql
+ALTER TABLE interactions
+  ADD COLUMN followup_email_sent_at DATETIME NULL,
+  ADD INDEX idx_interactions_followup (data_followup);
+```
+
+### Ativando o envio automático (Cron Job)
+
+1. Em `config.php`, confira/ajuste estas 3 linhas (adicione se ainda não
+   existirem):
+   ```php
+   'email_from' => 'crm@seudominio.com.br',
+   'email_from_name' => 'Sua Empresa — Painel Comercial',
+   'painel_url' => 'https://seudominio.com.br/crm/',
+   ```
+   O `email_from` precisa ser um e-mail do **mesmo domínio** do site (ex.:
+   `crm@edusia.com.br` se o painel está em `edusia.com.br`) — isso reduz
+   bastante a chance do e-mail cair em spam.
+2. No hPanel, vá em **"Avançado" → "Cron Jobs"**.
+3. Crie um novo cron job com periodicidade **"Uma vez por dia"** (escolha um
+   horário, ex.: 8h da manhã).
+4. No campo de comando, cole (trocando pelo caminho real da sua conta —
+   você vê o caminho completo no topo do Gerenciador de Arquivos):
+   ```
+   php /home/SEU_USUARIO/public_html/crm/cron_followup.php
+   ```
+5. Salve. Pronto — a partir de amanhã, os e-mails passam a sair sozinhos.
+
+> ⚠️ **Sobre entregabilidade:** este script usa a função `mail()` nativa do
+> PHP, que é simples e gratuita, mas tem mais chance de cair na caixa de
+> spam do que um serviço de e-mail dedicado (Gmail/Workspace, SendGrid,
+> Brevo etc.). Se notar muitos e-mails não entregues, é possível trocar o
+> `cron_followup.php` para enviar via SMTP autenticado — avise que ajusto.
+
+---
+
 ## Se algo der errado
 
 | Mensagem/sintoma | O que fazer |

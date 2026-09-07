@@ -68,7 +68,9 @@ CREATE TABLE IF NOT EXISTS interactions (
   estagio VARCHAR(30) NOT NULL,
   vendedor_registro VARCHAR(120) DEFAULT '',
   created_at DATETIME NOT NULL,
+  followup_email_sent_at DATETIME NULL,
   CONSTRAINT fk_interactions_contact FOREIGN KEY (contact_id)
     REFERENCES contacts(id) ON DELETE CASCADE,
-  INDEX idx_interactions_contact (contact_id)
+  INDEX idx_interactions_contact (contact_id),
+  INDEX idx_interactions_followup (data_followup)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

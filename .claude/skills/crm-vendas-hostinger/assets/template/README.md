@@ -134,6 +134,40 @@ e-mail e senha.
 
 ---
 
+## E-mails automáticos de follow-up (opcional)
+
+O painel pode enviar e-mails sozinho, uma vez por dia, para cada interação
+cujo campo **"Próximo follow-up"** cair na data de hoje (e o negócio ainda
+não estiver fechado): um e-mail para o **lead** (se ele tiver e-mail
+cadastrado) e um alerta interno para o **vendedor responsável** (se ele
+tiver conta no painel). Cada follow-up só gera um e-mail — depois de
+enviado, não é repetido no dia seguinte.
+
+Isso é opcional e não vem ativado sozinho — para ligar:
+
+1. Em `config.php`, confira/ajuste estas 3 linhas:
+   ```php
+   'email_from' => 'crm@seudominio.com.br',
+   'email_from_name' => '{{EMPRESA}} — Painel Comercial',
+   'painel_url' => 'https://seudominio.com.br/crm/',
+   ```
+   O `email_from` precisa ser um e-mail do **mesmo domínio** do site — isso
+   reduz bastante a chance do e-mail cair em spam.
+2. No hPanel, vá em **"Avançado" → "Cron Jobs"**.
+3. Crie um novo cron job com periodicidade **"Uma vez por dia"**.
+4. No campo de comando, cole (trocando pelo caminho real da sua conta):
+   ```
+   php /home/SEU_USUARIO/public_html/crm/cron_followup.php
+   ```
+5. Salve. A partir do dia seguinte, os e-mails passam a sair sozinhos.
+
+> ⚠️ Este script usa a função `mail()` nativa do PHP (simples e gratuita,
+> mas com mais chance de cair em spam do que um serviço de e-mail
+> dedicado). Para maior entregabilidade, é possível trocar por SMTP
+> autenticado (Gmail/Workspace, SendGrid, Brevo etc.).
+
+---
+
 ## Se algo der errado
 
 | Mensagem/sintoma | O que fazer |

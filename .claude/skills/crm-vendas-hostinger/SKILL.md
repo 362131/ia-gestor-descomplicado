@@ -29,6 +29,9 @@ que recriar ~1500 linhas de HTML/JS/PHP a cada pedido.
 - KPIs (total de leads, taxa de conversão, pipeline em aberto, follow-ups
   atrasados, leads por vendedor), filtros, alerta visual de atraso.
 - Exportação em CSV, Excel (SheetJS) e PDF (jsPDF).
+- **E-mails automáticos de follow-up** (opcional, via Cron Job do Hostinger):
+  quando a data de follow-up de uma interação chega, envia um e-mail ao lead
+  e um alerta interno ao vendedor responsável.
 - Área de administrador: gerenciar equipe (criar/remover contas) e relatório
   de acessos (quem entrou, quando, de qual IP).
 - Tema claro/escuro automático, responsivo, sem dependências além de duas
@@ -103,12 +106,13 @@ A partir do nome da empresa, derive:
 
 1. Escolha (ou pergunte) o destino: por padrão, crie uma pasta
    `<slug>-crm/` no diretório de trabalho atual.
-2. Copie estes 5 arquivos de `assets/template/` para o destino, sem alterar
+2. Copie estes 6 arquivos de `assets/template/` para o destino, sem alterar
    nome nem estrutura:
    - `index.html`
    - `api.php`
    - `schema.sql`
    - `config.sample.php`
+   - `cron_followup.php`
    - `README.md`
 3. Em cada um, substitua todos os placeholders `{{EMPRESA}}`,
    `{{EMPRESA_CURTO}}`, `{{LOGO_A}}`, `{{LOGO_B}}`, `{{SLUG}}`,

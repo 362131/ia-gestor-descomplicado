@@ -15,4 +15,10 @@ return [
     // seguro e pode ser usado como está; troque por outra frase longa sem
     // espaços se preferir escolher a sua própria.
     'api_token' => 'NXUqLwqxjJdOmgfRCMJby5mTrOPl_CfD',
+
+    // Usados pelo cron_followup.php para enviar os e-mails automáticos de
+    // follow-up (veja README.md, seção "E-mails automáticos de follow-up").
+    'email_from' => 'crm@edusia.com.br',
+    'email_from_name' => 'EdusIA — Painel Comercial',
+    'painel_url' => 'https://edusia.com.br/crm/',
 ];
