@@ -103,7 +103,8 @@ def build_story(styles, empresa, perfil, url_exemplo):
     if perfil == "admin":
         toc_items = [
             "O que é o Painel Comercial", "Como entrar no painel",
-            "Cadastrando um novo contato (lead)", "Registrando conversas e propostas",
+            "Cadastrando um novo contato (lead)", "Perfil DISC e como convencer cada perfil",
+            "Assistente de resposta com IA", "Registrando conversas e propostas",
             "Editando ou removendo um contato", "Indicadores (KPIs) e filtros",
             "Alerta de follow-up atrasado", "Exportando dados (CSV, Excel e PDF)",
             "Ranking de vendas", "Administrador x Vendedor — o que cada um vê",
@@ -112,7 +113,8 @@ def build_story(styles, empresa, perfil, url_exemplo):
     else:
         toc_items = [
             "O que é o Painel Comercial", "Como entrar no painel",
-            "Cadastrando um novo contato (lead)", "Registrando conversas e propostas",
+            "Cadastrando um novo contato (lead)", "Perfil DISC e como convencer cada perfil",
+            "Assistente de resposta com IA", "Registrando conversas e propostas",
             "Editando ou removendo um contato", "Indicadores (KPIs) e filtros",
             "Alerta de follow-up atrasado", "Exportando dados (CSV, Excel e PDF)",
             "Ranking de vendas", "O que é exclusivo do administrador",
@@ -190,6 +192,78 @@ def build_story(styles, empresa, perfil, url_exemplo):
         "Depois de salvo, o contato aparece na sua lista, colorido de acordo com o perfil DISC "
         "identificado.",
         styles["Body"]))
+
+    # ---------- 3b. Perfil DISC ----------
+    story.append(section("Perfil DISC e como convencer cada perfil"))
+    story.append(Paragraph(
+        "O <b>DISC</b> é uma metodologia simples de perfil comportamental que ajuda a adaptar a "
+        "forma de conversar com cada lead. O painel usa 4 letras: <b>D</b> (Dominante), "
+        "<b>I</b> (Influente), <b>S</b> (Estável) e <b>C</b> (Conforme/Analítico).",
+        styles["Body"]))
+    story.append(subsection("Não sabe qual é o perfil? Deixe o painel te ajudar"))
+    story.append(Paragraph(
+        "No cadastro ou edição do contato, ao lado dos botões D/I/S/C, existe uma lista de frases "
+        "típicas — clique na que mais se parece com o que o lead disse, e o perfil correspondente já "
+        "é marcado automaticamente:",
+        styles["Body"]))
+    disc_table = [
+        ["Se o lead disse algo como...", "Perfil provável"],
+        ['"Vai direto ao ponto: quanto custa e quando começa?"', "D — Dominante"],
+        ['"Adorei a ideia! Me conta mais sobre a experiência."', "I — Influente"],
+        ['"Preciso pensar com calma e conversar com a equipe."', "S — Estável"],
+        ['"Quero ver quem já usou e quais foram os resultados."', "C — Conforme/Analítico"],
+    ]
+    disc_tbl = Table(disc_table, colWidths=[11 * cm, 5.6 * cm])
+    disc_tbl.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, 0), VIOLET),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("FONTNAME", (0, 1), (-1, -1), "Helvetica"),
+        ("FONTSIZE", (0, 0), (-1, -1), 8.6),
+        ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, VIOLET_SOFT]),
+        ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#E3E1F0")),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ("TOPPADDING", (0, 0), (-1, -1), 6),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+        ("LEFTPADDING", (0, 0), (-1, -1), 8),
+    ]))
+    story.append(disc_tbl)
+    story.append(Spacer(1, 8))
+    story.append(subsection("Dica automática de como convencer cada perfil"))
+    story.append(Paragraph(
+        "Depois de salvar o contato com um perfil DISC identificado, abra o contato novamente: uma "
+        "caixa amarela aparece com dicas prontas de como abordar aquele tipo de perfil (tom de "
+        "conversa, o que enfatizar, o que evitar). Essa dica é automática, não precisa configurar "
+        "nada.",
+        styles["Body"]))
+
+    # ---------- 3c. Assistente de resposta com IA ----------
+    story.append(section("Assistente de resposta com IA"))
+    story.append(Paragraph(
+        "Dentro de cada contato, acima de \"Registrar nova conversa\", existe a caixa "
+        "<b>\"🤖 Assistente de resposta (IA)\"</b>. Use quando o lead responder algo (uma objeção, "
+        "uma dúvida, um \"vou pensar\") e você não souber exatamente o que responder:",
+        styles["Body"]))
+    story.append(bullets(styles, [
+        "Cole no campo o que o comprador respondeu (por WhatsApp, e-mail etc.).",
+        'Clique em <b>"Gerar sugestão de resposta"</b>.',
+        "A IA lê o histórico da negociação (produto, valor, estágio, perfil DISC) e sugere um texto "
+        "persuasivo para você enviar.",
+        'Revise a sugestão, ajuste o que quiser, e clique em <b>"📋 Copiar"</b> para colar no '
+        "WhatsApp/e-mail.",
+    ]))
+    story.append(Paragraph(
+        "<b>Importante:</b> a IA só sugere — ela nunca envia nada sozinha para o lead. A decisão "
+        "final é sempre sua.",
+        styles["Body"]))
+    if perfil == "admin":
+        story.append(Paragraph(
+            "Esse recurso depende de uma chave de API da Anthropic configurada no <b>config.php</b> "
+            "do servidor (campo <code>anthropic_api_key</code>). Sem essa chave configurada, o botão "
+            "aparece normalmente mas mostra uma mensagem de erro ao clicar — o resto do painel "
+            "continua funcionando sem problema. Consulte o README.md do projeto para o passo a passo "
+            "de configuração.",
+            styles["BodySmall"]))
 
     # ---------- 4. Conversas ----------
     story.append(section("Registrando conversas e propostas"))
@@ -321,6 +395,14 @@ def build_story(styles, empresa, perfil, url_exemplo):
         story.append(Paragraph(
             "Mostra os últimos 300 logins da equipe: nome, e-mail, data/hora e endereço IP de "
             "origem — útil para acompanhar quem está usando o painel e quando.",
+            styles["Body"]))
+        story.append(subsection("E-mails automáticos de follow-up"))
+        story.append(Paragraph(
+            "O painel pode enviar e-mails sozinho, uma vez por dia, quando a data de follow-up de "
+            "uma interação chega: um e-mail para o lead (se tiver e-mail cadastrado) e um alerta "
+            "interno para o vendedor responsável. Esse recurso é opcional e configurado uma única "
+            "vez via <b>Cron Job</b> no hPanel do Hostinger — consulte o README.md do projeto "
+            "(seção \"E-mails automáticos de follow-up\") para o passo a passo completo.",
             styles["Body"]))
     else:
         story.append(section("O que é exclusivo do administrador"))
