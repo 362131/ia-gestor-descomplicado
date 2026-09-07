@@ -163,6 +163,11 @@
   .disc-pick button.sel-I{ background:var(--amber); color:#fff; border-color:var(--amber); }
   .disc-pick button.sel-S{ background:var(--green); color:#fff; border-color:var(--green); }
   .disc-pick button.sel-C{ background:var(--blue); color:#fff; border-color:var(--blue); }
+  .disc-hint{ margin-top:.6em; border:1px dashed var(--line); border-radius:var(--radius-s); padding:.6em .7em; }
+  .disc-hint-title{ font-size:.78rem; color:var(--ash); margin-bottom:.4em; }
+  .disc-hint-list{ display:flex; flex-direction:column; gap:.3em; }
+  .disc-hint-btn{ text-align:left; border:1px solid var(--line); background:var(--paper); border-radius:var(--radius-s); padding:.4em .6em; font-size:.8rem; cursor:pointer; }
+  .disc-hint-btn:hover{ background:var(--paper-raised); }
 
   .toast{ position:fixed; bottom:1.2rem; right:1.2rem; background:var(--ink); color:var(--paper); padding:.7em 1.1em; border-radius:var(--radius-s); box-shadow:var(--shadow); font-size:.85rem; z-index:80; }
 
@@ -307,6 +312,19 @@
           <button type="button" data-l="I">I</button>
           <button type="button" data-l="S">S</button>
           <button type="button" data-l="C">C</button>
+        </div>
+        <div class="disc-hint">
+          <div class="disc-hint-title">💡 Não sabe o perfil? Clique na frase mais parecida com o que o lead disse:</div>
+          <div class="disc-hint-list">
+            <button type="button" class="disc-hint-btn" data-l="D">"Vai direto ao ponto: quanto custa e quando começa?"</button>
+            <button type="button" class="disc-hint-btn" data-l="D">"Não tenho muito tempo, me manda só o essencial."</button>
+            <button type="button" class="disc-hint-btn" data-l="I">"Adorei a ideia! Me conta mais sobre a experiência."</button>
+            <button type="button" class="disc-hint-btn" data-l="I">"Já vi gente comentando bem disso, parece animado."</button>
+            <button type="button" class="disc-hint-btn" data-l="S">"Preciso pensar com calma e conversar com a equipe."</button>
+            <button type="button" class="disc-hint-btn" data-l="S">"Como funciona o suporte depois que eu contratar?"</button>
+            <button type="button" class="disc-hint-btn" data-l="C">"Quero ver quem já usou e quais foram os resultados."</button>
+            <button type="button" class="disc-hint-btn" data-l="C">"Tem algum estudo de caso ou dado que comprove isso?"</button>
+          </div>
         </div>
       </div>
       <div class="form-actions">
@@ -991,16 +1009,28 @@
     els.btnCancelModal.addEventListener("click", function(){ els.modalBackdrop.hidden=true; });
     els.modalBackdrop.addEventListener("click", function(ev){ if(ev.target===els.modalBackdrop) els.modalBackdrop.hidden=true; });
 
+    function setDiscValue(next){
+      els.discPick.setAttribute("data-value", next);
+      els.discPick.querySelectorAll("button").forEach(function(x){
+        x.classList.toggle("sel-"+x.getAttribute("data-l"), next.indexOf(x.getAttribute("data-l"))!==-1);
+      });
+    }
+
     els.discPick.querySelectorAll("button").forEach(function(b){
       b.addEventListener("click", function(){
         var cur = els.discPick.getAttribute("data-value")||"";
         var l = b.getAttribute("data-l");
         var has = cur.indexOf(l)!==-1;
-        var next = has ? cur.replace(l,"") : cur+l;
-        els.discPick.setAttribute("data-value", next);
-        els.discPick.querySelectorAll("button").forEach(function(x){
-          x.classList.toggle("sel-"+x.getAttribute("data-l"), next.indexOf(x.getAttribute("data-l"))!==-1);
-        });
+        setDiscValue(has ? cur.replace(l,"") : cur+l);
+      });
+    });
+
+    document.querySelectorAll(".disc-hint-btn").forEach(function(b){
+      b.addEventListener("click", function(){
+        var l = b.getAttribute("data-l");
+        var cur = els.discPick.getAttribute("data-value")||"";
+        if(cur.indexOf(l)===-1){ setDiscValue(cur+l); }
+        toast("Perfil sugerido: " + l + ". Confira e ajuste se precisar.");
       });
     });
 

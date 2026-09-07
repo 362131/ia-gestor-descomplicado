@@ -135,6 +135,10 @@ e-mail e senha.
   identificado, aparece automaticamente uma caixa com dicas de como
   convencer aquele tipo de perfil (D, I, S ou C) — sem precisar de IA, é um
   texto fixo baseado na metodologia DISC.
+- **Ajuda para identificar o perfil DISC**: no cadastro/edição do contato,
+  se o vendedor não sabe o perfil, tem uma lista de frases típicas que o
+  lead pode ter dito (ex.: "quero ver quem já usou e os resultados" → perfil
+  C) — clicar na frase mais parecida já marca o perfil sugerido.
 
 ---
 
