@@ -211,6 +211,39 @@ ALTER TABLE interactions
 
 ---
 
+## Assistente de resposta com IA (opcional)
+
+Em cada contato, acima de "Registrar nova conversa", tem uma caixa
+**"🤖 Assistente de resposta (IA)"**: o vendedor cola ali o que o lead
+respondeu e clica em "Gerar sugestão de resposta" — a IA (Claude, da
+Anthropic) lê o histórico da negociação e sugere um texto persuasivo para
+convencer o lead a avançar. O vendedor sempre revisa e edita antes de
+enviar; a IA nunca manda nada sozinha.
+
+### Ativando
+
+1. Crie uma conta em **console.anthropic.com**, adicione uma forma de
+   pagamento (é pré-pago, cobrado por uso — cada sugestão custa frações de
+   centavo) e gere uma **API key** em "API Keys".
+2. Em `config.php`, adicione (ou preencha, se já existir vazia):
+   ```php
+   'anthropic_api_key' => 'sk-ant-SUA_CHAVE_AQUI',
+   'ai_model' => 'claude-haiku-4-5-20251001',
+   ```
+3. Salve e teste: abra um contato, cole uma resposta de exemplo do
+   comprador na caixa da IA e clique em gerar.
+
+Se `anthropic_api_key` ficar em branco, o botão aparece normalmente mas
+mostra um erro claro ao clicar — o resto do painel continua funcionando
+sem problema.
+
+> ⚠️ O texto do comprador e o histórico da negociação são enviados à API
+> da Anthropic para gerar a sugestão. Não é armazenado por ela além do
+> necessário para processar a resposta, mas é bom estar ciente disso ao
+> lidar com dados sensíveis de clientes.
+
+---
+
 ## Se algo der errado
 
 | Mensagem/sintoma | O que fazer |

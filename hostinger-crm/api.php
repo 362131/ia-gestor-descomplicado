@@ -339,6 +339,93 @@ switch ($action) {
         break;
     }
 
+    case 'suggest_reply': {
+        $contactId = reqStr($input['contactId'] ?? null, 'contactId');
+        $respostaComprador = reqStr($input['respostaComprador'] ?? null, 'respostaComprador');
+
+        $stmt = $pdo->prepare('SELECT * FROM contacts WHERE id = ?');
+        $stmt->execute([$contactId]);
+        $contact = $stmt->fetch();
+        if (!$contact) fail(404, 'Contato não encontrado.');
+        if (!$isAdmin && trim($contact['vendedor']) !== trim($meuNome)) {
+            fail(403, 'Você só pode gerar sugestões para os próprios leads.');
+        }
+
+        $apiKey = $config['anthropic_api_key'] ?? '';
+        if (!$apiKey) {
+            fail(500, 'Chave de IA não configurada. Adicione "anthropic_api_key" no config.php.');
+        }
+        $model = $config['ai_model'] ?? 'claude-haiku-4-5-20251001';
+
+        $intStmt = $pdo->prepare('SELECT * FROM interactions WHERE contact_id = ? ORDER BY data_hora DESC LIMIT 5');
+        $intStmt->execute([$contactId]);
+        $interactions = array_reverse($intStmt->fetchAll());
+
+        $historico = '';
+        foreach ($interactions as $it) {
+            $historico .= "- [{$it['data_hora']}] Canal: {$it['canal']}. Resumo: {$it['resumo']}. "
+                . "Estágio: {$it['estagio']}. Produto: {$it['produto']} ({$it['pilar']}). "
+                . "Valor da proposta: R$ " . number_format((float)$it['valor'], 2, ',', '.') . ".\n";
+        }
+        if ($historico === '') {
+            $historico = "(nenhuma conversa registrada ainda)\n";
+        }
+
+        $empresaNome = $config['email_from_name'] ?? 'a empresa';
+        $contexto = "Lead: {$contact['nome']}"
+            . ($contact['empresa'] ? " ({$contact['empresa']})" : '')
+            . ($contact['cargo'] ? ", cargo: {$contact['cargo']}" : '')
+            . ($contact['disc'] ? ". Perfil DISC: {$contact['disc']}" : '') . "\n"
+            . "Origem do lead: {$contact['origem']}\n\n"
+            . "Histórico de conversas recentes:\n{$historico}\n"
+            . "O comprador acabou de responder o seguinte:\n\"{$respostaComprador}\"\n\n"
+            . "Escreva a melhor resposta possível para convencê-lo a avançar na negociação.";
+
+        $system = "Você é um assistente de vendas experiente ajudando um vendedor de {$empresaNome}. "
+            . "Sua tarefa é sugerir uma resposta persuasiva, natural e humana (não robótica) para o "
+            . "vendedor enviar ao lead, considerando o perfil DISC dele quando disponível (D=direto e "
+            . "objetivo, I=entusiasmado e social, S=paciente e tranquilizador, C=lógico e detalhado). "
+            . "Responda em português do Brasil, em tom cordial e direto, pronto para o vendedor copiar "
+            . "e enviar como está (sem saudações genéricas demais, sem parecer gerado por IA, sem "
+            . "aspas ao redor do texto). Não invente promessas, preços, prazos ou condições que não "
+            . "estejam no histórico fornecido — se precisar de uma informação que não tem, deixe um "
+            . "espaço claro tipo [confirmar prazo] em vez de inventar.";
+
+        $ch = curl_init('https://api.anthropic.com/v1/messages');
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTPHEADER => [
+                'x-api-key: ' . $apiKey,
+                'anthropic-version: 2023-06-01',
+                'content-type: application/json',
+            ],
+            CURLOPT_POSTFIELDS => json_encode([
+                'model' => $model,
+                'max_tokens' => 700,
+                'system' => $system,
+                'messages' => [['role' => 'user', 'content' => $contexto]],
+            ]),
+        ]);
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
+        curl_close($ch);
+
+        if ($response === false) {
+            fail(502, 'Falha ao conectar com a IA: ' . $curlError);
+        }
+        $decoded = json_decode($response, true);
+        if ($httpCode !== 200 || !isset($decoded['content'][0]['text'])) {
+            $errMsg = $decoded['error']['message'] ?? ('HTTP ' . $httpCode);
+            fail(502, 'Falha ao gerar sugestão com IA: ' . $errMsg);
+        }
+
+        echo json_encode(['sugestao' => trim($decoded['content'][0]['text'])]);
+        break;
+    }
+
     case 'delete_user': {
         requireAdmin($currentUser);
         $id = reqStr($input['id'] ?? null, 'id');

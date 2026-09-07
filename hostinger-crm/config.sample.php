@@ -21,4 +21,11 @@ return [
     'email_from' => 'crm@edusia.com.br',
     'email_from_name' => 'EdusIA — Painel Comercial',
     'painel_url' => 'https://edusia.com.br/crm/',
+
+    // Usada pelo botão "🤖 Sugerir resposta" (assistente de IA que ajuda o
+    // vendedor a responder o comprador). Crie sua chave em
+    // console.anthropic.com > API Keys. Deixe em branco para desativar o
+    // recurso sem quebrar o resto do painel.
+    'anthropic_api_key' => '',
+    'ai_model' => 'claude-haiku-4-5-20251001',
 ];

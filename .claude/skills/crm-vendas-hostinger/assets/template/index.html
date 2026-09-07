@@ -145,6 +145,8 @@
 
   .new-int-form{ border:1px dashed var(--line); border-radius:var(--radius-m); padding:1em; margin-top:.6em; }
   .form-actions{ display:flex; gap:.6em; justify-content:flex-end; margin-top:.5em; }
+  .ai-reply-box{ border:1px solid var(--violet-soft); background:var(--violet-soft); border-radius:var(--radius-m); padding:1em; margin-top:.6em; }
+  .ai-reply-box textarea{ width:100%; box-sizing:border-box; }
 
   .picker-empty{ color:var(--ash); text-align:center; padding:4em 1em; }
 
@@ -721,6 +723,18 @@
       html += '<div class="empty-state" style="padding:1.2em;">Nenhuma conversa registrada ainda.</div>';
     }
 
+    html += '<div class="section-title">🤖 Assistente de resposta (IA)</div>';
+    html += '<div class="ai-reply-box">' +
+      '<div class="field"><label>Cole aqui a resposta do comprador</label>' +
+        '<textarea id="aiInputResposta" rows="3" placeholder="Cole o que o lead respondeu por WhatsApp, e-mail etc..."></textarea></div>' +
+      '<div class="form-actions"><button type="button" class="btn btn-primary btn-sm" id="btnAiSuggest">Gerar sugestão de resposta</button></div>' +
+      '<div id="aiSuggestionBox" hidden style="margin-top:.8rem;">' +
+        '<div class="field"><label>Sugestão de resposta (revise antes de enviar)</label>' +
+        '<textarea id="aiOutputResposta" rows="7"></textarea></div>' +
+        '<div class="form-actions"><button type="button" class="btn btn-ghost btn-sm" id="btnCopySuggestion">📋 Copiar</button></div>' +
+      '</div>' +
+    '</div>';
+
     html += '<div class="section-title">Registrar nova conversa</div>';
     html += '<form class="new-int-form" id="formInteracao">' +
       '<div class="row2">' +
@@ -783,6 +797,34 @@
       }catch(e){
         console.error(e);
         toast(e.message || "Não foi possível registrar a conversa.");
+      }
+    });
+
+    document.getElementById("btnAiSuggest").addEventListener("click", async function(){
+      var btn = this;
+      var respostaComprador = document.getElementById("aiInputResposta").value.trim();
+      if(!respostaComprador){ toast("Cole a resposta do comprador primeiro."); return; }
+      var textoOriginal = btn.textContent;
+      btn.disabled = true; btn.textContent = "Gerando...";
+      try{
+        var r = await api("suggest_reply", {body: {contactId: c.id, respostaComprador: respostaComprador}});
+        document.getElementById("aiOutputResposta").value = r.sugestao;
+        document.getElementById("aiSuggestionBox").hidden = false;
+      }catch(e){
+        console.error(e);
+        toast(e.message || "Não foi possível gerar a sugestão.");
+      }finally{
+        btn.disabled = false; btn.textContent = textoOriginal;
+      }
+    });
+
+    document.getElementById("btnCopySuggestion").addEventListener("click", async function(){
+      var texto = document.getElementById("aiOutputResposta").value;
+      try{
+        await navigator.clipboard.writeText(texto);
+        toast("Copiado!");
+      }catch(e){
+        toast("Não foi possível copiar automaticamente. Selecione o texto manualmente.");
       }
     });
 

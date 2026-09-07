@@ -32,6 +32,9 @@ que recriar ~1500 linhas de HTML/JS/PHP a cada pedido.
 - **E-mails automáticos de follow-up** (opcional, via Cron Job do Hostinger):
   quando a data de follow-up de uma interação chega, envia um e-mail ao lead
   e um alerta interno ao vendedor responsável.
+- **Assistente de resposta com IA** (opcional, requer API key da Anthropic):
+  o vendedor cola a resposta do comprador e a IA sugere um texto persuasivo
+  para convencê-lo a avançar — o vendedor sempre revisa antes de enviar.
 - Área de administrador: gerenciar equipe (criar/remover contas) e relatório
   de acessos (quem entrou, quando, de qual IP).
 - Tema claro/escuro automático, responsivo, sem dependências além de duas
