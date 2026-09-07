@@ -229,6 +229,7 @@ enviar; a IA nunca manda nada sozinha.
    ```php
    'anthropic_api_key' => 'sk-ant-SUA_CHAVE_AQUI',
    'ai_model' => 'claude-haiku-4-5-20251001',
+   'frase_padrao' => 'Uma frase institucional sua, opcional, que a IA pode encaixar quando fizer sentido.',
    ```
 3. Salve e teste: abra um contato, cole uma resposta de exemplo do
    comprador na caixa da IA e clique em gerar.

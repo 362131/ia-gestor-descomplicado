@@ -381,15 +381,22 @@ switch ($action) {
             . "O comprador acabou de responder o seguinte:\n\"{$respostaComprador}\"\n\n"
             . "Escreva a melhor resposta possível para convencê-lo a avançar na negociação.";
 
+        $fraseEmpresa = $config['frase_padrao'] ?? '';
         $system = "Você é um assistente de vendas experiente ajudando um vendedor de {$empresaNome}. "
-            . "Sua tarefa é sugerir uma resposta persuasiva, natural e humana (não robótica) para o "
-            . "vendedor enviar ao lead, considerando o perfil DISC dele quando disponível (D=direto e "
-            . "objetivo, I=entusiasmado e social, S=paciente e tranquilizador, C=lógico e detalhado). "
-            . "Responda em português do Brasil, em tom cordial e direto, pronto para o vendedor copiar "
-            . "e enviar como está (sem saudações genéricas demais, sem parecer gerado por IA, sem "
-            . "aspas ao redor do texto). Não invente promessas, preços, prazos ou condições que não "
-            . "estejam no histórico fornecido — se precisar de uma informação que não tem, deixe um "
-            . "espaço claro tipo [confirmar prazo] em vez de inventar.";
+            . "Sua tarefa é sugerir uma resposta persuasiva, informal e direta (não robótica, nada de "
+            . "formalidade exagerada) para o vendedor enviar ao lead, considerando o perfil DISC dele "
+            . "quando disponível (D=direto e objetivo, I=entusiasmado e social, S=paciente e "
+            . "tranquilizador, C=lógico e detalhado). Escreva como alguém que manda mensagem de "
+            . "verdade no WhatsApp: frases curtas, sem rodeio, pode usar contrações e uma linguagem "
+            . "mais solta, sem perder o profissionalismo nem parecer geração automática. Vá direto ao "
+            . "ponto da objeção do comprador nas primeiras linhas, sem introdução genérica. "
+            . "Responda em português do Brasil, pronto para o vendedor copiar e enviar como está "
+            . "(sem aspas ao redor do texto). Não invente promessas, preços, prazos ou condições que "
+            . "não estejam no histórico fornecido — se precisar de uma informação que não tem, deixe "
+            . "um espaço claro tipo [confirmar prazo] em vez de inventar."
+            . ($fraseEmpresa ? " Quando fizer sentido no contexto (não em toda resposta, só quando "
+                . "reforçar o argumento), pode encaixar de forma natural — nunca robótica — uma "
+                . "variação desta frase institucional da empresa: \"{$fraseEmpresa}\"." : '');
 
         $ch = curl_init('https://api.anthropic.com/v1/messages');
         curl_setopt_array($ch, [

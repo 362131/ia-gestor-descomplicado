@@ -28,4 +28,8 @@ return [
     // recurso sem quebrar o resto do painel.
     'anthropic_api_key' => '',
     'ai_model' => 'claude-haiku-4-5-20251001',
+
+    // Frase institucional que a IA pode encaixar (com naturalidade, não em
+    // toda resposta) nas sugestões geradas. Deixe em branco para não usar.
+    'frase_padrao' => '',
 ];
