@@ -1,0 +1,327 @@
+/* ============================================================
+   VARIÁVEIS CSS (CUSTOM PROPERTIES)
+   Aqui ficam guardadas as cores do site, como se fossem "apelidos".
+   Assim, em vez de repetir um código de cor várias vezes no arquivo,
+   usamos var(--nome-da-variavel) e trocamos tudo em um lugar só.
+   O bloco ":root" define os valores padrão (tema claro).
+   ============================================================ */
+:root {
+  --cor-fundo: #ffffff;
+  --cor-fundo-alt: #f4f6f8;      /* fundo levemente diferente, usado para alternar seções */
+  --cor-texto: #1a1a1a;
+  --cor-texto-suave: #4d4d4d;
+  --cor-primaria: #2f6fed;       /* cor principal, usada em botões e destaques */
+  --cor-primaria-hover: #1e54c4;
+  --cor-borda: #e0e0e0;
+  --cor-cartao: #ffffff;
+  --sombra: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* Quando o tema escuro estiver ativo (classe adicionada pelo JavaScript
+   no elemento <body>), sobrescrevemos as variáveis acima com tons escuros.
+   Como o restante do CSS usa var(--cor-x), tudo muda automaticamente. */
+body.tema-escuro {
+  --cor-fundo: #121212;
+  --cor-fundo-alt: #1a1a1a;
+  --cor-texto: #f2f2f2;
+  --cor-texto-suave: #cccccc;
+  --cor-primaria: #5b8def;
+  --cor-primaria-hover: #7ea3f5;
+  --cor-borda: #2c2c2c;
+  --cor-cartao: #1e1e1e;
+  --sombra: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+/* ============================================================
+   RESET BÁSICO
+   Remove espaçamentos padrão do navegador e define regras gerais
+   para que o layout fique mais previsível em qualquer navegador.
+   ============================================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* faz o padding/borda entrarem na largura total do elemento */
+}
+
+html {
+  scroll-behavior: smooth; /* rolagem suave ao clicar em links "#âncora" */
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  background-color: var(--cor-fundo);
+  color: var(--cor-texto);
+  line-height: 1.6;
+  /* Transição suave ao trocar de tema claro/escuro */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ============================================================
+   CABEÇALHO E MENU DE NAVEGAÇÃO
+   ============================================================ */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: var(--cor-fundo);
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+.navbar {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--cor-texto);
+  text-decoration: none;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.nav-links a {
+  color: var(--cor-texto);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.nav-links a:hover {
+  color: var(--cor-primaria);
+}
+
+/* Botão de alternar tema (ícone de lua/sol) */
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--cor-borda);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Botão "hambúrguer" (as três risquinhas). Fica escondido no desktop
+   e só aparece quando a tela é estreita (ver media query lá embaixo). */
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 26px;
+  height: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.menu-toggle span {
+  display: block;
+  height: 3px;
+  width: 100%;
+  background-color: var(--cor-texto);
+  border-radius: 2px;
+}
+
+/* ============================================================
+   SEÇÃO PRINCIPAL (HERO / TOPO)
+   ============================================================ */
+.hero {
+  padding: 100px 0 80px;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 2.6rem;
+  margin-bottom: 12px;
+}
+
+.hero .subtitle {
+  font-size: 1.2rem;
+  color: var(--cor-texto-suave);
+  max-width: 600px;
+  margin: 0 auto 32px;
+}
+
+.btn {
+  display: inline-block;
+  padding: 12px 28px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn-primary {
+  background-color: var(--cor-primaria);
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background-color: var(--cor-primaria-hover);
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+/* ============================================================
+   SEÇÕES GERAIS (Sobre, Projetos, Contato)
+   ============================================================ */
+.section {
+  padding: 70px 0;
+}
+
+/* Classe usada para alternar o fundo de algumas seções,
+   criando um contraste visual leve entre elas */
+.section-alt {
+  background-color: var(--cor-fundo-alt);
+}
+
+.section h2 {
+  font-size: 2rem;
+  margin-bottom: 24px;
+}
+
+.section p {
+  color: var(--cor-texto-suave);
+  max-width: 700px;
+  margin-bottom: 16px;
+}
+
+/* ============================================================
+   CARTÕES DE PROJETOS
+   Usamos CSS Grid para organizar os cartões lado a lado,
+   e eles se reorganizam automaticamente em telas menores.
+   ============================================================ */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 32px;
+}
+
+.card {
+  background-color: var(--cor-cartao);
+  border: 1px solid var(--cor-borda);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: var(--sombra);
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px); /* efeito de "levantar" o cartão ao passar o mouse */
+}
+
+.card h3 {
+  margin-bottom: 8px;
+}
+
+.card p {
+  font-size: 0.95rem;
+  margin-bottom: 16px;
+}
+
+.card-link {
+  color: var(--cor-primaria);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.card-link:hover {
+  text-decoration: underline;
+}
+
+/* ============================================================
+   LISTA DE CONTATO
+   ============================================================ */
+.contact-list {
+  list-style: none;
+  margin-top: 16px;
+}
+
+.contact-list li {
+  margin-bottom: 10px;
+}
+
+.contact-list a {
+  color: var(--cor-primaria);
+  text-decoration: none;
+}
+
+.contact-list a:hover {
+  text-decoration: underline;
+}
+
+/* ============================================================
+   RODAPÉ
+   ============================================================ */
+.footer {
+  text-align: center;
+  padding: 24px;
+  border-top: 1px solid var(--cor-borda);
+  color: var(--cor-texto-suave);
+  font-size: 0.9rem;
+}
+
+/* ============================================================
+   RESPONSIVIDADE (CELULAR)
+   A partir daqui, as regras só valem para telas com largura
+   até 768px. É aqui que o menu vira "três risquinhos".
+   ============================================================ */
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: flex; /* mostra o botão hambúrguer só no celular */
+  }
+
+  .nav-links {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    background-color: var(--cor-fundo);
+    border-bottom: 1px solid var(--cor-borda);
+    /* Menu começa escondido: altura zero e conteúdo cortado */
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+
+  /* Classe adicionada pelo JavaScript quando o menu é aberto */
+  .nav-links.aberto {
+    max-height: 300px;
+  }
+
+  .nav-links li {
+    width: 100%;
+    padding: 12px 24px;
+  }
+
+  .cards {
+    grid-template-columns: 1fr; /* cartões empilhados, um por linha */
+  }
+}

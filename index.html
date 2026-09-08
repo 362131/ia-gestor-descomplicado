@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eduardo Carvalho | Especialista em Inteligência Artificial</title>
+  <meta name="description" content="Site pessoal de Eduardo Carvalho, especialista em Inteligência Artificial." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Cabeçalho fixo com nome, menu de navegação e botão de tema -->
+  <header class="header">
+    <nav class="navbar">
+      <a href="#topo" class="logo">Eduardo Carvalho</a>
+
+      <!-- Botão "hambúrguer", só aparece no celular -->
+      <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#sobre">Sobre</a></li>
+        <li><a href="#projetos">Projetos</a></li>
+        <li><a href="#contato">Contato</a></li>
+        <li>
+          <button class="theme-toggle" id="theme-toggle" aria-label="Alternar tema claro/escuro">🌙</button>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Seção principal (topo da página) -->
+    <section id="topo" class="hero">
+      <div class="container">
+        <h1>Eduardo Carvalho</h1>
+        <p class="subtitle">Especialista em Inteligência Artificial, transformando dados em decisões inteligentes.</p>
+        <a href="#contato" class="btn btn-primary">Fale comigo</a>
+      </div>
+    </section>
+
+    <!-- Seção Sobre -->
+    <section id="sobre" class="section">
+      <div class="container">
+        <h2>Sobre</h2>
+        <p>
+          Sou especialista em Inteligência Artificial, com foco em projetar e implementar soluções
+          práticas que unem ciência de dados, automação e aprendizado de máquina. Ao longo da minha
+          trajetória, tenho ajudado empresas e pessoas a entenderem como a IA pode ser aplicada de
+          forma acessível, ética e eficiente no dia a dia.
+        </p>
+        <p>
+          Acredito que a tecnologia deve simplificar a vida das pessoas, não complicá-la. Por isso,
+          meu trabalho combina conhecimento técnico com uma comunicação clara, para que qualquer
+          pessoa, independentemente do nível de conhecimento em tecnologia, consiga entender e se
+          beneficiar do potencial da Inteligência Artificial.
+        </p>
+      </div>
+    </section>
+
+    <!-- Seção Projetos -->
+    <section id="projetos" class="section section-alt">
+      <div class="container">
+        <h2>Projetos</h2>
+        <div class="cards">
+
+          <article class="card">
+            <h3>Gestor Descomplicado</h3>
+            <p>Plataforma com IA para simplificar a gestão financeira e operacional de pequenos negócios.</p>
+            <a href="#" class="card-link">Ver projeto &rarr;</a>
+          </article>
+
+          <article class="card">
+            <h3>Assistentes Inteligentes</h3>
+            <p>Desenvolvimento de agentes de IA personalizados para automatizar tarefas repetitivas de empresas.</p>
+            <a href="#" class="card-link">Ver projeto &rarr;</a>
+          </article>
+
+          <article class="card">
+            <h3>Painéis de Dados com IA</h3>
+            <p>Dashboards interativos que usam Inteligência Artificial para gerar insights automáticos.</p>
+            <a href="#" class="card-link">Ver projeto &rarr;</a>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção Contato -->
+    <section id="contato" class="section">
+      <div class="container">
+        <h2>Contato</h2>
+        <p>Ficou com alguma dúvida ou quer conversar sobre um projeto? Entre em contato:</p>
+        <ul class="contact-list">
+          <li>
+            <strong>E-mail:</strong>
+            <a href="mailto:eduardocarvalhopalestrante@gmail.com">eduardocarvalhopalestrante@gmail.com</a>
+          </li>
+          <li>
+            <strong>LinkedIn:</strong>
+            <a href="https://www.linkedin.com/in/eduardocarvalho" target="_blank" rel="noopener noreferrer">linkedin.com/in/eduardocarvalho</a>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; <span id="ano-atual"></span> Eduardo Carvalho. Todos os direitos reservados.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
