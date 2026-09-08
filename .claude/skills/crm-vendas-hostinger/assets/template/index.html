@@ -414,6 +414,11 @@
   function uid(){ return Math.random().toString(36).slice(2,10) + Date.now().toString(36); }
   function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
   function fmtMoney(n){ n=Number(n)||0; return "R$ " + n.toLocaleString("pt-BR",{minimumFractionDigits:2, maximumFractionDigits:2}); }
+  function buildWhatsAppLink(telefone, texto){
+    var digits = (telefone||"").replace(/\D/g,"");
+    if(digits && digits.length<=11){ digits = "55" + digits; } // assume Brasil quando não vier com código do país
+    return "https://wa.me/" + digits + "?text=" + encodeURIComponent(texto);
+  }
   function fmtDate(iso){ if(!iso) return "—"; var d=new Date(iso); if(isNaN(d)) return iso; return d.toLocaleDateString("pt-BR"); }
   function fmtDateTime(iso){ if(!iso) return "—"; var d=new Date(iso); if(isNaN(d)) return iso; return d.toLocaleDateString("pt-BR")+" "+d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}); }
   function todayISO(){ return new Date().toISOString().slice(0,10); }
@@ -761,7 +766,10 @@
       '<div id="aiSuggestionBox" hidden style="margin-top:.8rem;">' +
         '<div class="field"><label>Sugestão de resposta (revise antes de enviar)</label>' +
         '<textarea id="aiOutputResposta" rows="7"></textarea></div>' +
-        '<div class="form-actions"><button type="button" class="btn btn-ghost btn-sm" id="btnCopySuggestion">📋 Copiar</button></div>' +
+        '<div class="form-actions">' +
+          '<button type="button" class="btn btn-ghost btn-sm" id="btnCopySuggestion">📋 Copiar</button>' +
+          '<button type="button" class="btn btn-primary btn-sm" id="btnWhatsAppSuggestion">📱 Abrir no WhatsApp</button>' +
+        '</div>' +
       '</div>' +
     '</div>';
 
@@ -856,6 +864,13 @@
       }catch(e){
         toast("Não foi possível copiar automaticamente. Selecione o texto manualmente.");
       }
+    });
+
+    document.getElementById("btnWhatsAppSuggestion").addEventListener("click", function(){
+      var texto = document.getElementById("aiOutputResposta").value;
+      if(!texto.trim()){ toast("Gere a sugestão de resposta primeiro."); return; }
+      if(!c.telefone){ toast("Este contato não tem telefone/WhatsApp cadastrado."); return; }
+      window.open(buildWhatsAppLink(c.telefone, texto), "_blank");
     });
 
     var tagsEditor = document.getElementById("tagsEditor");

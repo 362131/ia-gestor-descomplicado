@@ -249,8 +249,9 @@ def build_story(styles, empresa, perfil, url_exemplo):
         'Clique em <b>"Gerar sugestão de resposta"</b>.',
         "A IA lê o histórico da negociação (produto, valor, estágio, perfil DISC) e sugere um texto "
         "persuasivo para você enviar.",
-        'Revise a sugestão, ajuste o que quiser, e clique em <b>"📋 Copiar"</b> para colar no '
-        "WhatsApp/e-mail.",
+        'Revise a sugestão, ajuste o que quiser, e clique em <b>"📱 Abrir no WhatsApp"</b> — abre a '
+        "conversa já com o número do contato e o texto preenchido, só falta enviar. Também dá para "
+        'clicar em <b>"📋 Copiar"</b> e colar em outro canal, como e-mail.',
     ]))
     story.append(Paragraph(
         "<b>Importante:</b> a IA só sugere — ela nunca envia nada sozinha para o lead. A decisão "

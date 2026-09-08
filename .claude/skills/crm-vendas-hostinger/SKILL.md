@@ -34,7 +34,8 @@ que recriar ~1500 linhas de HTML/JS/PHP a cada pedido.
   e um alerta interno ao vendedor responsável.
 - **Assistente de resposta com IA** (opcional, requer API key da Anthropic):
   o vendedor cola a resposta do comprador e a IA sugere um texto persuasivo
-  para convencê-lo a avançar — o vendedor sempre revisa antes de enviar.
+  para convencê-lo a avançar — o vendedor sempre revisa antes de enviar, e
+  pode abrir a sugestão direto no WhatsApp com um clique.
 - **Ajuda para identificar e dica de abordagem por perfil DISC** (sem custo,
   texto fixo): no cadastro, uma lista de frases típicas ("quero ver quem já
   usou e os resultados" → perfil C) ajuda a identificar o perfil do lead

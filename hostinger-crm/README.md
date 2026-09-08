@@ -251,6 +251,13 @@ sem problema.
 > necessário para processar a resposta, mas é bom estar ciente disso ao
 > lidar com dados sensíveis de clientes.
 
+Depois de gerar a sugestão, o botão **"📱 Abrir no WhatsApp"** abre o
+WhatsApp (Web ou app, dependendo do dispositivo) já com o número do
+contato e a mensagem sugerida preenchida — só falta o vendedor conferir e
+apertar enviar. Funciona tanto no celular quanto no computador. Se o
+contato não tiver telefone cadastrado, o botão avisa em vez de abrir uma
+conversa em branco.
+
 ---
 
 ## Se algo der errado

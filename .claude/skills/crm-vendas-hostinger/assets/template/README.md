@@ -202,6 +202,10 @@ Se `anthropic_api_key` ficar em branco, o botão aparece normalmente mas
 mostra um erro claro ao clicar — o resto do painel continua funcionando
 sem problema.
 
+Depois de gerar a sugestão, o botão **"📱 Abrir no WhatsApp"** abre o
+WhatsApp (Web ou app) já com o número do contato e a mensagem sugerida
+preenchida.
+
 ---
 
 ## Se algo der errado
